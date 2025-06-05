@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router";
 import SocialSignIn from "../components/SocialSignIn/SocialSignIn";
 
 const Register = () => {
-  const { createUser } = useContext(AuthContext);
+  const { createUser, updateUserProfile } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleRegister = (e) => {
@@ -20,32 +20,33 @@ const Register = () => {
 
     // create user with email & password
     createUser(email, password)
-      .then((result) => {
-        console.log(result.user);
+      .then(() => {
+        // create user info for update profile
+        const userInfo = {
+          displayName: name,
+          photoURL: photo,
+        };
 
-        navigate("/");
-        Swal.fire({
-          title: "Account Created Successfully!",
-          icon: "success",
-          timer: 1000,
-          didOpen: () => {
-            Swal.showLoading();
-          },
-        });
+        // update user profile
+        updateUserProfile(userInfo)
+          .then(() => {
+            navigate("/");
+            Swal.fire({
+              title: "Account Created Successfully!",
+              icon: "success",
+              timer: 1000,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       })
       .catch((error) => {
         console.log(error);
       });
-
-    // create user info
-    const user = {
-      displayName: name,
-      photoURL: photo,
-      email,
-      password,
-    };
-
-    console.log(user);
   };
 
   return (
@@ -89,7 +90,7 @@ const Register = () => {
         </fieldset>
       </form>
       <div className="w-xs mx-auto divider">OR</div>
-      <SocialSignIn/>
+      <SocialSignIn />
       <div className="mt-3 flex items-center gap-1 justify-center w-xs mx-auto font-medium">
         <p>Already Have an Account?</p>
         <Link to="/signin" className="underline">

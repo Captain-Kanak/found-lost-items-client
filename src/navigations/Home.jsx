@@ -1,11 +1,12 @@
-import React from 'react';
+import React from "react";
+import Silder from "../components/Home/Silder";
 
 const Home = () => {
-    return (
-        <div>
-            <h3>this is home</h3>
-        </div>
-    );
+  return (
+    <div>
+      <Silder />
+    </div>
+  );
 };
 
 export default Home;

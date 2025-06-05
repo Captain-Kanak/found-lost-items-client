@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, NavLink } from "react-router";
 import { AuthContext } from "../../contexts/AuthContext";
 import { FaSignOutAlt } from "react-icons/fa";
@@ -6,6 +6,7 @@ import { FaSignOutAlt } from "react-icons/fa";
 const Navbar = () => {
   const { user, signOutUser } = useContext(AuthContext);
   const [isOpen, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const handleSignOut = () => {
     signOutUser()
@@ -16,6 +17,20 @@ const Navbar = () => {
         console.log(error);
       });
   };
+
+  // close drop down when click outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // create nav-links
   const links = (
@@ -66,12 +81,12 @@ const Navbar = () => {
       </div>
       <div className="navbar-end">
         {user ? (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" ref={dropdownRef}>
             <img
               onClick={() => setOpen(!isOpen)}
               className="w-[40px] h-[40px] rounded-full cursor-pointer"
               src={user?.photoURL || "https://i.ibb.co/XkzcZ8mD/user.png"}
-              title={user?.displayName || "User"}
+              title={user?.displayName}
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src = "https://i.ibb.co/XkzcZ8mD/user.png";
@@ -81,7 +96,7 @@ const Navbar = () => {
               onClick={handleSignOut}
               className="btn btn-outline btn-success"
             >
-              <FaSignOutAlt size={18} />
+              <FaSignOutAlt />
               Sign Out
             </button>
 
@@ -91,13 +106,22 @@ const Navbar = () => {
                 isOpen ? "flex" : "hidden"
               }`}
             >
-              <Link className="cursor-pointer font-medium hover:underline">
+              <Link
+                onClick={() => setOpen(false)}
+                className="cursor-pointer font-medium hover:underline"
+              >
                 Add Lost & Found Item
               </Link>
-              <Link className="cursor-pointer font-medium hover:underline">
+              <Link
+                onClick={() => setOpen(false)}
+                className="cursor-pointer font-medium hover:underline"
+              >
                 All Recovered Items
               </Link>
-              <Link className="cursor-pointer font-medium hover:underline">
+              <Link
+                onClick={() => setOpen(false)}
+                className="cursor-pointer font-medium hover:underline"
+              >
                 Manage My Items
               </Link>
             </div>
