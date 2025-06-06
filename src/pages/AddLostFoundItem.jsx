@@ -2,10 +2,15 @@ import React, { useContext, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
 
 const AddLostFoundItem = () => {
   const { user } = useContext(AuthContext);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const notify = () => toast.success("Item Added Successfully!");
+  const navigate = useNavigate();
 
   const handleAddItem = (e) => {
     e.preventDefault();
@@ -15,6 +20,20 @@ const AddLostFoundItem = () => {
     const data = Object.fromEntries(formData.entries());
     data.date = selectedDate.toISOString();
     console.log(data);
+
+    // send data to database using axios method
+    axios
+      .post("http://localhost:3000/items", data)
+      .then((result) => {
+        console.log(result.data);
+        if (result.data?.insertedId) {
+          navigate("/found-lost-items");
+          notify();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -70,7 +89,7 @@ const AddLostFoundItem = () => {
           <label className="label">Location</label>
           <input
             type="text"
-            name="location "
+            name="location"
             className="input w-full"
             placeholder="Location Where Item Lost or Found"
           />

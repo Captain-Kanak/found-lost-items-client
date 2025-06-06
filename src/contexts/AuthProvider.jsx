@@ -18,22 +18,27 @@ const AuthProvider = ({ children }) => {
 
   // firebase auth functions
   const createUser = (email, password) => {
+    setLoading(false);
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
   const signInUser = (email, password) => {
+    setLoading(false);
     return signInWithEmailAndPassword(auth, email, password);
   };
 
   const signOutUser = () => {
+    setLoading(false);
     return signOut(auth);
   };
 
   const googleSignIn = () => {
+    setLoading(false);
     return signInWithPopup(auth, googleProvider);
   };
 
   const updateUserProfile = (userInfo) => {
+    setLoading(false);
     return updateProfile(auth.currentUser, userInfo);
   };
 
@@ -56,7 +61,9 @@ const AuthProvider = ({ children }) => {
     updateUserProfile,
   };
 
-  return <AuthContext value={contexts}>{children}</AuthContext>;
+  return (
+    <AuthContext.Provider value={contexts}>{children}</AuthContext.Provider>
+  );
 };
 
 export default AuthProvider;
