@@ -11,7 +11,7 @@ const Navbar = () => {
   const handleSignOut = () => {
     signOutUser()
       .then(() => {
-        // user sign out sucessfully
+        // user sign out successfully
       })
       .catch((error) => {
         console.log(error);
@@ -102,11 +102,12 @@ const Navbar = () => {
 
             {/* profile picture drop down */}
             <div
-              className={`absolute bg-base-200 p-2 right-4 lg:right-16 top-16 flex-col gap-1 rounded-lg ${
+              className={`absolute bg-base-200 px-2 py-3 right-4 lg:right-16 top-16 flex-col gap-1 rounded-lg z-20 ${
                 isOpen ? "flex" : "hidden"
               }`}
             >
               <Link
+                to="/add-lost-found-item"
                 onClick={() => setOpen(false)}
                 className="cursor-pointer font-medium hover:underline"
               >

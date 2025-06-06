@@ -41,12 +41,11 @@ const Slider = () => {
                 className="flex-1/2 mx-auto h-[200px] md:h-[250px] lg:h-[500px] rounded-lg"
               />
               <div className="flex-1/2 flex flex-col gap-3 lg:items-center justify-center">
-                <h1 className="lg:text-4xl font-bold">
-                  Found Your Lost Items Here
+                <h1 className="font-medium lg:text-4xl lg:font-bold">
+                  Found Your Lost Items
                 </h1>
-                <p className="text-sm">Double click on this button.</p>
                 <Link to="/found-lost-items">
-                  <button className="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg xl:btn-xl">
+                  <button className="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg xl:btn-xl hover:ml-2 hover:bg-green-500 hover:text-white transition duration-200">
                     Found Lost Items <FaLocationArrow />
                   </button>
                 </Link>

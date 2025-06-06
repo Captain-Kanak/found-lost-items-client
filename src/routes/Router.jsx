@@ -4,6 +4,7 @@ import Home from "../navigations/Home";
 import Register from "../pages/Register";
 import SignIn from "../pages/SignIn";
 import FoundLostItems from "../navigations/FoundLostItems";
+import AddLostFoundItem from "../pages/AddLostFoundItem";
 
 export const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ export const router = createBrowserRouter([
       {
         path: "/register",
         Component: Register,
+      },
+      {
+        path: "/add-lost-found-item",
+        element: <AddLostFoundItem />,
       },
     ],
   },
