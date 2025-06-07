@@ -8,7 +8,7 @@ function App() {
   return (
     <>
       <Navbar />
-      <div className="px-4 lg:px-16">
+      <div className="px-4 lg:px-28">
         <Outlet />
       </div>
       <Footer />

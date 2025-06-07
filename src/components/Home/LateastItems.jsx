@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "../../contexts/AuthContext";
 import axios from "axios";
-import ItemsCard from "../components/ItemsCard";
+import ItemsCard from "../ItemsCard";
 
-const FoundLostItems = () => {
+const LateastItems = () => {
   const { loading, setLoading } = useContext(AuthContext);
   const [items, setItems] = useState([]);
 
@@ -23,10 +23,8 @@ const FoundLostItems = () => {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div className="py-8">
-      <h1 className="text-center text-3xl font-bold">
-        Found Your Lost Items using Our Network
-      </h1>
+    <div className="mt-12">
+      <h1 className="text-center text-2xl lg:text-3xl font-bold">Latest Lost & Found Items</h1>
       <div className="mt-10 grid gap-5 grid-cols-1 lg:grid-cols-3">
         {items.map((item) => (
           <ItemsCard key={item._id} item={item} />
@@ -36,4 +34,4 @@ const FoundLostItems = () => {
   );
 };
 
-export default FoundLostItems;
+export default LateastItems;
