@@ -25,7 +25,7 @@ const FoundLostItems = () => {
   return (
     <div className="py-8">
       <h1 className="text-center text-3xl font-bold">
-        Found Your Lost Items using Our Network
+        Find Your Lost Items Through Our Network
       </h1>
       <div className="mt-10 grid gap-5 grid-cols-1 lg:grid-cols-3">
         {items.map((item) => (
