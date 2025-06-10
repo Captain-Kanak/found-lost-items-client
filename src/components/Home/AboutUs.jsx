@@ -34,17 +34,17 @@ const AboutUs = () => {
         </div>
 
         <div className="border rounded-lg flex gap-2 flex-col py-10 items-center justify-center">
-          <p className="font-medium">Total Country</p>
+          <p className="font-medium">Total Items Recovered</p>
           <h2 className="text-4xl font-bold">
             <CountUp
               start={0}
-              end={31}
+              end={972}
               duration={3}
               delay={1.5}
               separator=","
             />
           </h2>
-          <p className="font-medium">Countries Records</p>
+          <p className="font-medium">Recovered Records</p>
         </div>
       </div>
     </div>

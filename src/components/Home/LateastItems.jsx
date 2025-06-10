@@ -7,6 +7,7 @@ import { Link } from "react-router";
 const LateastItems = () => {
   const { loading, setLoading } = useContext(AuthContext);
   const [items, setItems] = useState([]);
+  const firstSix = items.slice(0, 6);
 
   useEffect(() => {
     axios
@@ -20,7 +21,7 @@ const LateastItems = () => {
         setLoading(false);
       });
   }, [setLoading]);
-
+  
   if (loading) return <p>Loading...</p>;
 
   return (
@@ -29,7 +30,7 @@ const LateastItems = () => {
         Latest Lost & Found Items
       </h1>
       <div className="mt-10 grid gap-5 grid-cols-1 lg:grid-cols-3">
-        {items.map((item) => (
+        {firstSix.map((item) => (
           <ItemsCard key={item._id} item={item} />
         ))}
       </div>

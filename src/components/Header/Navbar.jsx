@@ -107,7 +107,7 @@ const Navbar = () => {
               }`}
             >
               <Link
-                to="/add-lost-found-item"
+                to="/addItems"
                 onClick={() => setOpen(false)}
                 className="cursor-pointer font-medium hover:underline"
               >

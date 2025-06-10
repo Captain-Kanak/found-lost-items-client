@@ -46,12 +46,15 @@ const AddLostFoundItem = () => {
           <label className="label">Post Type</label>
           <select
             name="post_type"
-            defaultValue="Select Post Type"
+            defaultValue=""
+            required
             className="select w-full"
           >
-            <option disabled={true}>Select Post Type</option>
-            <option>Lost</option>
-            <option>Found</option>
+            <option value="" disabled>
+              Select Post Type
+            </option>
+            <option value="Lost">Lost</option>
+            <option value="Found">Found</option>
           </select>
 
           <label className="label">Thumbnail</label>
@@ -60,6 +63,7 @@ const AddLostFoundItem = () => {
             name="thumbnail"
             className="input w-full"
             placeholder="Items Photo URL"
+            required
           />
 
           <label className="label">Title</label>
@@ -68,6 +72,7 @@ const AddLostFoundItem = () => {
             name="title"
             className="input w-full"
             placeholder="Enter Item Name"
+            required
           />
 
           <label className="label">Description</label>
@@ -76,6 +81,7 @@ const AddLostFoundItem = () => {
             name="description"
             className="input w-full"
             placeholder="Enter Description"
+            required
           />
 
           <label className="label">Category</label>
@@ -84,6 +90,7 @@ const AddLostFoundItem = () => {
             name="category"
             className="input w-full"
             placeholder="Enter Item Category"
+            required
           />
 
           <label className="label">Location</label>
@@ -92,6 +99,7 @@ const AddLostFoundItem = () => {
             name="location"
             className="input w-full"
             placeholder="Location Where Item Lost or Found"
+            required
           />
 
           <label className="label">Found or Lost Date</label>

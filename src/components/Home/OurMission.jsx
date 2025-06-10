@@ -31,7 +31,23 @@ const OurMission = () => {
             />
           </div>
           <div className="flex-1/2">
-            <h1 className="text-5xl font-bold">Our Mission</h1>
+            <h1 className="text-5xl font-bold">
+              Our{" "}
+              <motion.span
+                animate={{
+                  color: [
+                    "#fcb603",
+                    "#fc1c03",
+                    "#49fc03",
+                    "#03e8fc",
+                    "#d703fc",
+                  ],
+                }}
+                transition={{ duration: 7, repeat: Infinity }}
+              >
+                Mission
+              </motion.span>
+            </h1>
             <p className="py-6">
               "Our mission is to reconnect people with their lost belongings by
               building a trusted community-driven platform. We believe that a

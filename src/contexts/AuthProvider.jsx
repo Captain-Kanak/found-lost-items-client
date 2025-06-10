@@ -54,6 +54,7 @@ const AuthProvider = ({ children }) => {
   const contexts = {
     loading,
     user,
+    setLoading,
     createUser,
     signInUser,
     signOutUser,
