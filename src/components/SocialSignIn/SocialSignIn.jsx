@@ -3,7 +3,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 
-const SocialSignIn = () => {
+const SocialSignIn = ({ destination }) => {
   const { googleSignIn } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -12,7 +12,7 @@ const SocialSignIn = () => {
       .then((result) => {
         console.log(result.user);
 
-        navigate("/");
+        navigate(destination || "/");
         Swal.fire({
           title: "Welcome",
           icon: "success",

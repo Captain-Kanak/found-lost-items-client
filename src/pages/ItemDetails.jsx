@@ -1,7 +1,9 @@
 import { format } from "date-fns";
+import { useContext } from "react";
 import { GoMail } from "react-icons/go";
 import { SlLocationPin } from "react-icons/sl";
 import { useLoaderData } from "react-router";
+import { AuthContext } from "../contexts/AuthContext";
 
 const ItemDetails = () => {
   const item = useLoaderData();
@@ -13,11 +15,11 @@ const ItemDetails = () => {
     date,
     description,
     contact_info,
-    recovered,
   } = item;
-
+  const { user } = useContext(AuthContext);
   const formattedDate = format(new Date(date), "KK:mm a, dd-MMM-yyyy");
 
+  console.log(user);
   return (
     <div className="my-8">
       <div className="lg:flex lg:gap-12">
@@ -47,11 +49,14 @@ const ItemDetails = () => {
       </div>
 
       <div className="mt-2 flex items-center justify-center">
-        {recovered ? (
-          <button className="btn btn-primary">Recovered</button>
-        ) : (
-          <button className="btn btn-primary">Recover</button>
-        )}
+        <>
+          {post_type === "Lost" && (
+            <button className="btn btn-primary">Found This!</button>
+          )}
+          {post_type === "Found" && (
+            <button className="btn btn-primary">This is Mine!</button>
+          )}
+        </>
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import SignIn from "../pages/SignIn";
 import FoundLostItems from "../navigations/FoundLostItems";
 import AddLostFoundItem from "../pages/AddLostFoundItem";
 import ItemDetails from "../pages/ItemDetails";
+import PrivateRouter from "./PrivateRouter";
 
 export const router = createBrowserRouter([
   {
@@ -27,13 +28,21 @@ export const router = createBrowserRouter([
       },
       {
         path: "/addItems",
-        element: <AddLostFoundItem />,
+        element: (
+          <PrivateRouter>
+            <AddLostFoundItem />
+          </PrivateRouter>
+        ),
       },
       {
         path: "/items/:id",
         loader: ({ params }) =>
           fetch(`http://localhost:3000/items/${params.id}`),
-        Component: ItemDetails,
+        element: (
+          <PrivateRouter>
+            <ItemDetails />
+          </PrivateRouter>
+        ),
       },
     ],
   },

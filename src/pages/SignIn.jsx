@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../contexts/AuthContext";
 import Swal from "sweetalert2";
 import SocialSignIn from "../components/SocialSignIn/SocialSignIn";
@@ -7,6 +7,8 @@ import SocialSignIn from "../components/SocialSignIn/SocialSignIn";
 const SignIn = () => {
   const { signInUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const destination = location?.state;
 
   const handleSignIn = (e) => {
     e.preventDefault();
@@ -21,7 +23,7 @@ const SignIn = () => {
       .then((result) => {
         console.log(result.user);
 
-        navigate("/");
+        navigate(destination || "/");
         Swal.fire({
           title: "Welcome Back",
           icon: "success",
@@ -61,11 +63,11 @@ const SignIn = () => {
         </fieldset>
       </form>
       <div className="w-xs mx-auto divider">OR</div>
-      <SocialSignIn />
+      <SocialSignIn destination={destination} />
       <div className="mt-3 flex items-center gap-1 justify-center w-xs mx-auto font-medium">
-        <p>Already Have an Account?</p>
-        <Link to="/signin" className="underline">
-          SignIn
+        <p>Don't Have an Account?</p>
+        <Link to="/register" className="underline">
+          Register
         </Link>
       </div>
     </div>
