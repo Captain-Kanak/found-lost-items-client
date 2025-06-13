@@ -19,7 +19,6 @@ const AddLostFoundItem = () => {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
     data.date = selectedDate.toISOString();
-    console.log(data);
 
     // send data to database using axios method
     axios

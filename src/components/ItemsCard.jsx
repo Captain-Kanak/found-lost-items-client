@@ -1,10 +1,12 @@
-import React from "react";
-import { GoMail } from "react-icons/go";
+import { format } from "date-fns";
 import { SlLocationPin } from "react-icons/sl";
 import { Link } from "react-router";
 
 const ItemsCard = ({ item }) => {
-  const { _id, thumbnail, post_type, title, location, contact_info } = item;
+  const { _id, thumbnail, post_type, title, location, date } = item;
+
+  const formattedDate = format(new Date(date), "PPpp");
+
   return (
     <div>
       <div className="card bg-base-100 w-96 h-[400px] mx-auto shadow-sm">
@@ -22,8 +24,7 @@ const ItemsCard = ({ item }) => {
               {location}
             </p>
             <p className="flex gap-1 items-center text-base">
-              <GoMail size={14} />
-              {contact_info}
+              Date: {formattedDate}
             </p>
           </div>
           <div className="card-actions justify-end">
