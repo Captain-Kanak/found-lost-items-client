@@ -7,6 +7,8 @@ import FoundLostItems from "../navigations/FoundLostItems";
 import AddLostFoundItem from "../pages/AddLostFoundItem";
 import ItemDetails from "../pages/ItemDetails";
 import PrivateRouter from "./PrivateRouter";
+import MyItems from "../pages/MyItems";
+import RecoveredItems from "../pages/RecoveredItems";
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +43,26 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRouter>
             <ItemDetails />
+          </PrivateRouter>
+        ),
+      },
+      {
+        path: "/recoveredItems",
+        loader: () =>
+          fetch("http://localhost:3000/recovered-items").then((res) =>
+            res.json()
+          ),
+        element: (
+          <PrivateRouter>
+            <RecoveredItems />
+          </PrivateRouter>
+        ),
+      },
+      {
+        path: "/myItems",
+        element: (
+          <PrivateRouter>
+            <MyItems />
           </PrivateRouter>
         ),
       },

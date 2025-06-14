@@ -45,100 +45,106 @@ const Navbar = () => {
   );
 
   return (
-    <div className="navbar bg-base-100 shadow-sm px-4 lg:px-28 relative">
-      <div className="navbar-start">
-        <div className="dropdown">
-          <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+    <nav className="sticky top-0 z-10">
+      <div className="navbar bg-base-100 shadow-sm px-4 lg:px-28 relative">
+        <div className="navbar-start">
+          <div className="dropdown">
+            <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                {" "}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h8m-8 6h16"
+                />{" "}
+              </svg>
+            </div>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
             >
-              {" "}
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h8m-8 6h16"
-              />{" "}
-            </svg>
+              {links}
+            </ul>
           </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
-          >
-            {links}
-          </ul>
+          <h1 className="text-xl font-bold">
+            Items<span className="text-green-500">Tracker</span>
+          </h1>
         </div>
-        <h1 className="text-xl font-bold">
-          Items<span className="text-green-500">Tracker</span>
-        </h1>
-      </div>
-      <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">{links}</ul>
-      </div>
-      <div className="navbar-end">
-        {user ? (
-          <div className="flex items-center gap-2" ref={dropdownRef}>
-            <img
-              onClick={() => setOpen(!isOpen)}
-              className="w-[40px] h-[40px] rounded-full cursor-pointer"
-              src={user?.photoURL || "https://i.ibb.co/XkzcZ8mD/user.png"}
-              title={user?.displayName}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = "https://i.ibb.co/XkzcZ8mD/user.png";
-              }}
-            />
-            <button
-              onClick={handleSignOut}
-              className="btn btn-outline btn-success"
-            >
-              <FaSignOutAlt />
-              Sign Out
-            </button>
+        <div className="navbar-center hidden lg:flex">
+          <ul className="menu menu-horizontal px-1">{links}</ul>
+        </div>
+        <div className="navbar-end">
+          {user ? (
+            <div className="flex items-center gap-2" ref={dropdownRef}>
+              <img
+                onClick={() => setOpen(!isOpen)}
+                className="w-[40px] h-[40px] rounded-full cursor-pointer"
+                src={user?.photoURL || "https://i.ibb.co/XkzcZ8mD/user.png"}
+                title={user?.displayName}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://i.ibb.co/XkzcZ8mD/user.png";
+                }}
+              />
+              <button
+                onClick={handleSignOut}
+                className="btn btn-outline btn-success"
+              >
+                <FaSignOutAlt />
+                Sign Out
+              </button>
 
-            {/* profile picture drop down */}
-            <div
-              className={`absolute bg-base-200 px-2 py-3 right-4 lg:right-16 top-16 flex-col gap-1 rounded-lg z-20 ${
-                isOpen ? "flex" : "hidden"
-              }`}
-            >
-              <Link
-                to="/addItems"
-                onClick={() => setOpen(false)}
-                className="cursor-pointer font-medium hover:underline"
+              {/* profile picture drop down */}
+              <div
+                className={`absolute bg-base-200 px-2 py-3 right-4 lg:right-16 top-16 flex-col gap-1 rounded-lg z-20 ${
+                  isOpen ? "flex" : "hidden"
+                }`}
               >
-                Add Lost & Found Item
+                <Link
+                  to="/addItems"
+                  onClick={() => setOpen(false)}
+                  className="cursor-pointer font-medium hover:underline"
+                >
+                  Add Lost & Found Item
+                </Link>
+                <Link
+                  to="/recoveredItems"
+                  onClick={() => setOpen(false)}
+                  className="cursor-pointer font-medium hover:underline"
+                >
+                  All Recovered Items
+                </Link>
+                <Link
+                  to="/myItems"
+                  onClick={() => setOpen(false)}
+                  className="cursor-pointer font-medium hover:underline"
+                >
+                  Manage My Items
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link to="/signIn">
+                <button className="btn btn-outline btn-success">SignIn</button>
               </Link>
-              <Link
-                onClick={() => setOpen(false)}
-                className="cursor-pointer font-medium hover:underline"
-              >
-                All Recovered Items
-              </Link>
-              <Link
-                onClick={() => setOpen(false)}
-                className="cursor-pointer font-medium hover:underline"
-              >
-                Manage My Items
+              <Link to="/register">
+                <button className="btn btn-outline btn-success">
+                  Register
+                </button>
               </Link>
             </div>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <Link to="/signIn">
-              <button className="btn btn-outline btn-success">SignIn</button>
-            </Link>
-            <Link to="/register">
-              <button className="btn btn-outline btn-success">Register</button>
-            </Link>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </nav>
   );
 };
 
