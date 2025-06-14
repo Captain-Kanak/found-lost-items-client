@@ -8,6 +8,8 @@ import Modal from "react-modal";
 import DatePicker from "react-datepicker";
 import { toast } from "react-toastify";
 
+Modal.setAppElement("#root");
+
 const ItemDetails = () => {
   const item = useLoaderData();
   const {
@@ -15,6 +17,7 @@ const ItemDetails = () => {
     post_type,
     title,
     thumbnail,
+    category,
     location,
     date,
     description,
@@ -25,8 +28,6 @@ const ItemDetails = () => {
   // const formattedDate = format(new Date(date), "KK:mm a, dd-MMM-yyyy");
   const formattedDate = format(new Date(date), "PPpp");
   const [status, setStatus] = useState(initialStatus);
-
-  Modal.setAppElement("#root");
 
   const [showModal, setShowModal] = useState(false);
   const [recoveredLocation, setRecoveredLocation] = useState("");
@@ -43,9 +44,15 @@ const ItemDetails = () => {
     const recoveryInfo = {
       itemId: _id,
       title,
+      thumbnail,
+      category,
       post_type,
+      description,
+      location,
       recoveredLocation,
+      publishedDate: date,
       recoveredDate: recoveredDate.toISOString(),
+      publishedBy: contact_info,
       recoveredBy: {
         name: user.displayName,
         email: user.email,
@@ -101,6 +108,7 @@ const ItemDetails = () => {
         <div className="flex-1/2 flex flex-col gap-3">
           <h1>{title}</h1>
           <h1>Post Type: {post_type}</h1>
+          <p>Category: {category}</p>
 
           <p className="flex gap-1 items-center text-base">
             Location: <SlLocationPin size={14} />

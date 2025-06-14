@@ -3,11 +3,17 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { Link } from "react-router";
 import Swal from "sweetalert2";
+import Modal from "react-modal";
+import DatePicker from "react-datepicker";
+
+Modal.setAppElement("#root");
 
 const MyItems = () => {
   const { user, loading, setLoading } = useContext(AuthContext);
   const [items, setItems] = useState([]);
-  console.log(items);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [currentItem, setCurrentItem] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   useEffect(() => {
     if (!user?.email) return;
@@ -24,6 +30,17 @@ const MyItems = () => {
         setLoading(false);
       });
   }, [user, setLoading]);
+
+  const openModal = (item) => {
+    setCurrentItem(item);
+    setSelectedDate(item.date ? new Date(item.date) : new Date());
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setCurrentItem(null);
+  };
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -47,6 +64,34 @@ const MyItems = () => {
         });
       }
     });
+  };
+
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const updatedItem = {
+      title: form.title.value,
+      post_type: form.post_type.value,
+      thumbnail: form.thumbnail.value,
+      description: form.description.value,
+      category: form.category.value,
+      location: form.location.value,
+      contact_info: user.email,
+      user_name: user.displayName,
+      date: selectedDate,
+    };
+
+    axios
+      .put(`http://localhost:3000/items/${currentItem._id}`, updatedItem)
+      .then(() => {
+        const updatedList = items.map((item) =>
+          item._id === currentItem._id ? { ...item, ...updatedItem } : item
+        );
+        setItems(updatedList);
+        Swal.fire("Updated!", "Your item has been updated.", "success");
+        closeModal();
+      })
+      .catch((err) => console.error(err));
   };
 
   if (loading) {
@@ -81,8 +126,11 @@ const MyItems = () => {
                     <td className="px-4 py-2">{item.post_type}</td>
                     <td className="px-4 py-2">{item.location}</td>
                     <td className="px-4 py-2 flex flex-col lg:flex-row gap-2 items-center">
-                      <Link to={`/update/${item._id}`}>
-                        <button className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+                      <Link>
+                        <button
+                          onClick={() => openModal(item)}
+                          className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                        >
                           Update
                         </button>
                       </Link>
@@ -100,6 +148,135 @@ const MyItems = () => {
           </div>
         )}
       </div>
+
+      {/* Update Modal */}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Update Item"
+        className="max-w-md w-full sm:w-[90%] max-h-[90vh] overflow-y-auto mx-auto mt-10 bg-white p-6 rounded shadow-lg"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-30 flex items-start justify-center z-50"
+      >
+        <h3 className="text-lg font-bold mb-4">Update Item</h3>
+        <form onSubmit={handleUpdate} className="space-y-1">
+          <div>
+            <label className="block font-medium">Type</label>
+            <select
+              name="post_type"
+              defaultValue={currentItem?.post_type}
+              className="w-full border px-3 py-2 rounded"
+              required
+            >
+              <option value="Lost">Lost</option>
+              <option value="Found">Found</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block font-medium">Thumbnail</label>
+            <input
+              type="url"
+              name="thumbnail"
+              defaultValue={currentItem?.thumbnail}
+              className="w-full border px-3 py-2 rounded"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block font-medium">Title</label>
+            <input
+              type="text"
+              name="title"
+              defaultValue={currentItem?.title}
+              className="w-full border px-3 py-2 rounded"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block font-medium">Description</label>
+            <input
+              type="text"
+              name="description"
+              defaultValue={currentItem?.description}
+              className="w-full border px-3 py-2 rounded"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block font-medium">Category</label>
+            <input
+              type="text"
+              name="category"
+              defaultValue={currentItem?.category}
+              className="w-full border px-3 py-2 rounded"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block font-medium">Location</label>
+            <input
+              type="text"
+              name="location"
+              defaultValue={currentItem?.location}
+              className="w-full border px-3 py-2 rounded"
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="block font-medium">Updated Date:</label>
+            <DatePicker
+              selected={selectedDate}
+              onChange={(date) => setSelectedDate(date)}
+              name="date"
+              className="w-full border px-3 py-2 rounded"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block font-medium">User Name</label>
+            <input
+              type="text"
+              name="user_name"
+              defaultValue={user?.displayName}
+              className="w-full border px-3 py-2 rounded"
+              readOnly
+            />
+          </div>
+
+          <div>
+            <label className="block font-medium">Contact Email</label>
+            <input
+              type="text"
+              name="contact_info"
+              defaultValue={user?.email}
+              className="w-full border px-3 py-2 rounded"
+              readOnly
+            />
+          </div>
+
+          <div className="flex justify-end gap-2 pt-2">
+            <button
+              type="button"
+              onClick={closeModal}
+              className="px-4 py-2 border rounded"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="bg-blue-600 text-white px-4 py-2 rounded"
+            >
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 };
