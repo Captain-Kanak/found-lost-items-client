@@ -47,11 +47,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/recoveredItems",
-        loader: () =>
-          fetch("http://localhost:3000/recovered-items").then((res) =>
-            res.json()
-          ),
+        path: "/allRecovered",
         element: (
           <PrivateRouter>
             <RecoveredItems />

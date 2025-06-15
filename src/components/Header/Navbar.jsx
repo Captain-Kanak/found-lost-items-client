@@ -115,7 +115,7 @@ const Navbar = () => {
                   Add Lost & Found Item
                 </Link>
                 <Link
-                  to="/recoveredItems"
+                  to="/allRecovered"
                   onClick={() => setOpen(false)}
                   className="cursor-pointer font-medium hover:underline"
                 >

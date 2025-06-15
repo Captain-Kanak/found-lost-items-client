@@ -154,11 +154,14 @@ const MyItems = () => {
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel="Update Item"
-        className="max-w-md w-full sm:w-[90%] max-h-[90vh] overflow-y-auto mx-auto mt-10 bg-white p-6 rounded shadow-lg"
+        className="max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto mt-10 bg-white p-6 rounded shadow-lg"
         overlayClassName="fixed inset-0 bg-black bg-opacity-30 flex items-start justify-center z-50"
       >
         <h3 className="text-lg font-bold mb-4">Update Item</h3>
-        <form onSubmit={handleUpdate} className="space-y-1">
+        <form
+          onSubmit={handleUpdate}
+          className="space-y-1 max-h-[75vh] overflow-y-auto pr-2"
+        >
           <div>
             <label className="block font-medium">Type</label>
             <select
