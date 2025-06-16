@@ -9,11 +9,13 @@ import ItemDetails from "../pages/ItemDetails";
 import PrivateRouter from "./PrivateRouter";
 import MyItems from "../pages/MyItems";
 import RecoveredItems from "../pages/RecoveredItems";
+import ErrorPage from "../pages/ErrorPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     Component: App,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, Component: Home },
       {
@@ -39,7 +41,9 @@ export const router = createBrowserRouter([
       {
         path: "/items/:id",
         loader: ({ params }) =>
-          fetch(`http://localhost:3000/items/${params.id}`),
+          fetch(
+            `https://find-lost-items-server-psi.vercel.app/items/${params.id}`
+          ),
         element: (
           <PrivateRouter>
             <ItemDetails />

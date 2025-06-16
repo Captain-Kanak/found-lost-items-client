@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import axios from "axios";
 import ItemsCard from "../components/ItemsCard";
+import { Helmet } from "react-helmet";
 
 const FoundLostItems = () => {
   const { loading, setLoading } = useContext(AuthContext);
@@ -10,7 +11,7 @@ const FoundLostItems = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/items")
+      .get("https://find-lost-items-server-psi.vercel.app/items")
       .then((response) => {
         setItems(response.data);
         setLoading(false);
@@ -27,10 +28,20 @@ const FoundLostItems = () => {
       item.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (loading) return <p className="text-center text-lg">Loading...</p>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center p-10">
+        <span className="loading loading-spinner text-primary"></span>
+        <span className="loading loading-spinner text-secondary"></span>
+        <span className="loading loading-spinner text-accent"></span>
+      </div>
+    );
 
   return (
     <div className="py-8 px-4 max-w-6xl mx-auto">
+      <Helmet>
+        <title>All Items - App</title>
+      </Helmet>
       <h1 className="text-center text-3xl font-bold mb-6">
         Find Your Lost Items Through Our Network
       </h1>

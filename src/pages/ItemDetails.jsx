@@ -7,6 +7,7 @@ import { AuthContext } from "../contexts/AuthContext";
 import Modal from "react-modal";
 import DatePicker from "react-datepicker";
 import { toast } from "react-toastify";
+import { Helmet } from "react-helmet";
 
 Modal.setAppElement("#root");
 
@@ -64,18 +65,24 @@ const ItemDetails = () => {
       setIsSubmitting(true);
 
       // Add to recovered items
-      await fetch("http://localhost:3000/recovered-items", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(recoveryInfo),
-      });
+      await fetch(
+        "https://find-lost-items-server-psi.vercel.app/recovered-items",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(recoveryInfo),
+        }
+      );
 
       // Update this item
-      await fetch(`http://localhost:3000/items/${_id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "recovered" }),
-      });
+      await fetch(
+        `https://find-lost-items-server-psi.vercel.app/items/${_id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: "recovered" }),
+        }
+      );
 
       toast.success("Recovery submitted successfully!");
       setStatus("recovered");
@@ -93,9 +100,11 @@ const ItemDetails = () => {
     }
   };
 
-  console.log(user);
   return (
     <div className="my-8">
+      <Helmet>
+        <title>Item Details - App</title>
+      </Helmet>
       <div className="lg:flex lg:gap-12">
         <div className="flex-1/2">
           <img

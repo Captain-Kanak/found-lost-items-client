@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../contexts/AuthContext";
 import Swal from "sweetalert2";
 import SocialSignIn from "../components/SocialSignIn/SocialSignIn";
+import { Helmet } from "react-helmet";
 
 const SignIn = () => {
   const { signInUser } = useContext(AuthContext);
@@ -40,6 +41,9 @@ const SignIn = () => {
 
   return (
     <div className="py-6">
+      <Helmet>
+        <title>Signin - App</title>
+      </Helmet>
       <form onSubmit={handleSignIn}>
         <h1 className="text-center text-2xl font-bold">Login Your Account</h1>
         <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs mx-auto border p-4 mt-5">

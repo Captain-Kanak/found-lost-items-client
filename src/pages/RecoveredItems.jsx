@@ -4,6 +4,7 @@ import axios from "axios";
 import { format } from "date-fns";
 import { RiTableView } from "react-icons/ri";
 import { PiCards } from "react-icons/pi";
+import { Helmet } from "react-helmet";
 
 const RecoveredItems = () => {
   const { user, loading, setLoading } = useContext(AuthContext);
@@ -13,11 +14,14 @@ const RecoveredItems = () => {
   useEffect(() => {
     if (user?.email) {
       axios
-        .get(`http://localhost:3000/recovered-items?email=${user.email}`, {
-          headers: {
-            authorization: `Bearer ${user.accessToken}`,
-          },
-        })
+        .get(
+          `https://find-lost-items-server-psi.vercel.app/recovered-items?email=${user.email}`,
+          {
+            headers: {
+              authorization: `Bearer ${user.accessToken}`,
+            },
+          }
+        )
         .then((result) => {
           setItems(result.data);
           setLoading(false);
@@ -30,11 +34,20 @@ const RecoveredItems = () => {
   }, [user, setLoading]);
 
   if (loading) {
-    return <h3 className="text-center mt-10">Loading...</h3>;
+    return (
+      <div className="flex items-center justify-center p-10">
+        <span className="loading loading-spinner text-primary"></span>
+        <span className="loading loading-spinner text-secondary"></span>
+        <span className="loading loading-spinner text-accent"></span>
+      </div>
+    );
   }
 
   return (
     <div className="max-w-6xl mx-auto p-4">
+      <Helmet>
+        <title>Your Recovered Items - App</title>
+      </Helmet>
       <h2 className="text-2xl font-bold mb-4 text-center">
         Your All Recovered Items
       </h2>

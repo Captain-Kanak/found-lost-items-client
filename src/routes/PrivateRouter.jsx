@@ -7,7 +7,13 @@ const PrivateRouter = ({ children }) => {
   const location = useLocation();
 
   if (loading) {
-    return <h3>Loading....</h3>;
+    return (
+      <div className="flex items-center justify-center p-10">
+        <span className="loading loading-spinner text-primary"></span>
+        <span className="loading loading-spinner text-secondary"></span>
+        <span className="loading loading-spinner text-accent"></span>
+      </div>
+    );
   }
 
   if (!user) {

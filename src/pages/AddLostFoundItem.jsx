@@ -5,11 +5,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
+import { Helmet } from "react-helmet";
 
 const AddLostFoundItem = () => {
   const { user } = useContext(AuthContext);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const notify = () => toast.success("Item Added Successfully!");
   const navigate = useNavigate();
 
   const handleAddItem = (e) => {
@@ -22,12 +22,12 @@ const AddLostFoundItem = () => {
 
     // send data to database using axios method
     axios
-      .post("http://localhost:3000/items", data)
+      .post("https://find-lost-items-server-psi.vercel.app/items", data)
       .then((result) => {
         console.log(result.data);
         if (result.data?.insertedId) {
           navigate("/found-lost-items");
-          notify();
+          toast.success("Item Added Successfully!");
         }
       })
       .catch((error) => {
@@ -37,6 +37,9 @@ const AddLostFoundItem = () => {
 
   return (
     <div className="py-8">
+      <Helmet>
+        <title>Add Item - App</title>
+      </Helmet>
       <h1 className="text-center mb-5 text-xl font-bold">
         Add Your Lost or Found Item
       </h1>

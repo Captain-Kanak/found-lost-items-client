@@ -5,6 +5,7 @@ import { Link } from "react-router";
 import Swal from "sweetalert2";
 import Modal from "react-modal";
 import DatePicker from "react-datepicker";
+import { Helmet } from "react-helmet";
 
 Modal.setAppElement("#root");
 
@@ -19,11 +20,14 @@ const MyItems = () => {
     if (!user?.email) return;
 
     axios
-      .get(`http://localhost:3000/items?email=${user.email}`, {
-        headers: {
-          authorization: `Bearer ${user.accessToken}`,
-        },
-      })
+      .get(
+        `https://find-lost-items-server-psi.vercel.app/items?email=${user.email}`,
+        {
+          headers: {
+            authorization: `Bearer ${user.accessToken}`,
+          },
+        }
+      )
       .then((result) => {
         setItems(result.data);
       })
@@ -58,9 +62,11 @@ const MyItems = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         // delete item from db
-        axios.delete(`http://localhost:3000/items/${id}`).then(() => {
-          setItems(items.filter((item) => item._id !== id));
-        });
+        axios
+          .delete(`https://find-lost-items-server-psi.vercel.app/items/${id}`)
+          .then(() => {
+            setItems(items.filter((item) => item._id !== id));
+          });
         Swal.fire({
           title: "Deleted!",
           text: "Your Item has been deleted.",
@@ -86,7 +92,10 @@ const MyItems = () => {
     };
 
     axios
-      .put(`http://localhost:3000/items/${currentItem._id}`, updatedItem)
+      .put(
+        `https://find-lost-items-server-psi.vercel.app/items/${currentItem._id}`,
+        updatedItem
+      )
       .then(() => {
         const updatedList = items.map((item) =>
           item._id === currentItem._id ? { ...item, ...updatedItem } : item
@@ -99,11 +108,20 @@ const MyItems = () => {
   };
 
   if (loading) {
-    return <p>Loading....</p>;
+    return (
+      <div className="flex items-center justify-center p-10">
+        <span className="loading loading-spinner text-primary"></span>
+        <span className="loading loading-spinner text-secondary"></span>
+        <span className="loading loading-spinner text-accent"></span>
+      </div>
+    );
   }
 
   return (
     <div className="my-8 px-4 max-w-7xl mx-auto">
+      <Helmet>
+        <title>Your All Items - App</title>
+      </Helmet>
       <h2 className="text-center text-2xl font-semibold mb-4">
         My Posted Items
       </h2>
