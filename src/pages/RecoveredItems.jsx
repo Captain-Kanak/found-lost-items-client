@@ -2,10 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import axios from "axios";
 import { format } from "date-fns";
+import { RiTableView } from "react-icons/ri";
+import { PiCards } from "react-icons/pi";
 
 const RecoveredItems = () => {
   const { user, loading, setLoading } = useContext(AuthContext);
   const [items, setItems] = useState([]);
+  const [isTableView, setIsTableView] = useState(false); // 🔄 Layout toggle
 
   useEffect(() => {
     if (user?.email) {
@@ -31,16 +34,39 @@ const RecoveredItems = () => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-6 text-center">
+    <div className="max-w-6xl mx-auto p-4">
+      <h2 className="text-2xl font-bold mb-4 text-center">
         Your All Recovered Items
       </h2>
+
+      <div className="text-center mb-6 flex justify-center gap-4">
+        <button
+          onClick={() => setIsTableView(false)}
+          className={`btn flex items-center gap-2 ${
+            !isTableView ? "btn-primary" : "btn-outline"
+          }`}
+        >
+          <PiCards size={20} />
+          Card View
+        </button>
+
+        <button
+          onClick={() => setIsTableView(true)}
+          className={`btn flex items-center gap-2 ${
+            isTableView ? "btn-primary" : "btn-outline"
+          }`}
+        >
+          <RiTableView size={20} />
+          Table View
+        </button>
+      </div>
 
       {items.length === 0 ? (
         <p className="text-center text-gray-500">
           Haven't recovered any items yet.
         </p>
-      ) : (
+      ) : isTableView ? (
+        // Table View
         <div className="overflow-x-auto">
           <table className="min-w-full border border-gray-300 rounded-md">
             <thead className="bg-gray-100">
@@ -70,6 +96,38 @@ const RecoveredItems = () => {
               ))}
             </tbody>
           </table>
+        </div>
+      ) : (
+        // Card Layout
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {items.map((item) => (
+            <div
+              key={item._id}
+              className="bg-white shadow-md rounded-lg overflow-hidden"
+            >
+              <img
+                src={item.thumbnail}
+                alt={item.title}
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4">
+                <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                <p className="text-gray-600 mb-1">
+                  <strong>Type:</strong> {item.post_type}
+                </p>
+                <p className="text-gray-600 mb-1">
+                  <strong>Recovered Location:</strong>{" "}
+                  {item.recoveredLocation || "N/A"}
+                </p>
+                <p className="text-gray-600">
+                  <strong>Recovered Date:</strong>{" "}
+                  {item.recoveredDate
+                    ? format(new Date(item.recoveredDate), "MMM d, yyyy")
+                    : "N/A"}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
