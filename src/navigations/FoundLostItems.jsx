@@ -9,7 +9,9 @@ const FoundLostItems = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/items")
+      .get("http://localhost:3000/items", {
+        withCredentials: true,
+      })
       .then((response) => {
         setItems(response.data);
         setLoading(false);

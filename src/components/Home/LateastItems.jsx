@@ -21,7 +21,7 @@ const LateastItems = () => {
         setLoading(false);
       });
   }, [setLoading]);
-  
+
   if (loading) return <p>Loading...</p>;
 
   return (

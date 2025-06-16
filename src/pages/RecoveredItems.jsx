@@ -10,7 +10,11 @@ const RecoveredItems = () => {
   useEffect(() => {
     if (user?.email) {
       axios
-        .get(`http://localhost:3000/recovered-items?email=${user.email}`)
+        .get(`http://localhost:3000/recovered-items?email=${user.email}`, {
+          headers: {
+            authorization: `Bearer ${user.accessToken}`,
+          },
+        })
         .then((result) => {
           setItems(result.data);
           setLoading(false);

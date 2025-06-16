@@ -19,7 +19,11 @@ const MyItems = () => {
     if (!user?.email) return;
 
     axios
-      .get(`http://localhost:3000/items?email=${user.email}`)
+      .get(`http://localhost:3000/items?email=${user.email}`, {
+        headers: {
+          authorization: `Bearer ${user.accessToken}`,
+        },
+      })
       .then((result) => {
         setItems(result.data);
       })
