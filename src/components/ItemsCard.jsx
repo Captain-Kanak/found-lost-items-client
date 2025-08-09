@@ -16,7 +16,7 @@ const ItemsCard = ({ item }) => {
         <div className="card-body">
           <h2 className="card-title">
             {title}
-            <div className="badge badge-secondary">{post_type}</div>
+            <div className="badge badge-info text-white">{post_type}</div>
           </h2>
           <div>
             <p className="flex gap-1 items-center text-base">

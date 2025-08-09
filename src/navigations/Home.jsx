@@ -1,8 +1,8 @@
 import React from "react";
 import Slider from "../components/Home/Slider";
 import LateastItems from "../components/Home/LateastItems";
-import AboutUs from "../components/Home/AboutUs";
 import OurMission from "../components/Home/OurMission";
+import AboutOurStats from "../components/Home/AboutOurStats";
 
 const Home = () => {
   return (
@@ -10,7 +10,7 @@ const Home = () => {
       <Slider />
       <LateastItems />
       <OurMission />
-      <AboutUs />
+      <AboutOurStats />
     </div>
   );
 };

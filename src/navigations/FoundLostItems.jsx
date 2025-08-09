@@ -38,7 +38,7 @@ const FoundLostItems = () => {
     );
 
   return (
-    <div className="py-8 px-4 max-w-6xl mx-auto">
+    <div className="py-8">
       <Helmet>
         <title>All Items - App</title>
       </Helmet>
@@ -59,7 +59,7 @@ const FoundLostItems = () => {
 
       <div>
         {filteredItems.length > 0 ? (
-          <div className="grid gap-5 lg:gap-20 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
             {filteredItems.map((item) => (
               <ItemsCard key={item._id} item={item} />
             ))}

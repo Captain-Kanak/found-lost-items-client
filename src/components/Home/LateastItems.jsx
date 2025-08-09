@@ -7,7 +7,7 @@ import { Link } from "react-router";
 const LateastItems = () => {
   const { loading, setLoading } = useContext(AuthContext);
   const [items, setItems] = useState([]);
-  const firstSix = items.slice(0, 6);
+  const firstSix = items.slice(0, 8);
 
   useEffect(() => {
     axios
