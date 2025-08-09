@@ -10,6 +10,7 @@ import PrivateRouter from "./PrivateRouter";
 import MyItems from "../pages/MyItems";
 import RecoveredItems from "../pages/RecoveredItems";
 import ErrorPage from "../pages/ErrorPage";
+import AboutUs from "../navigations/AboutUs";
 
 export const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ export const router = createBrowserRouter([
       {
         path: "/register",
         Component: Register,
+      },
+      {
+        path: "aboutus",
+        Component: AboutUs,
       },
       {
         path: "/addItems",

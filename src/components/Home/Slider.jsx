@@ -1,6 +1,6 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -10,50 +10,71 @@ import itemsBox from "../../assets/lost-found-box.jpg";
 import { Link } from "react-router";
 import { FaLocationArrow } from "react-icons/fa";
 
+const slides = [
+  {
+    id: 1,
+    img: welcome,
+    alt: "Welcome",
+    title: "Welcome to Find & Return",
+  },
+  {
+    id: 2,
+    img: foundLostItems,
+    alt: "Lost and Found Items",
+    title: "Browse Lost & Found Items",
+  },
+  {
+    id: 3,
+    img: itemsBox,
+    alt: "Found Your Lost Items",
+    title: "Found Your Lost Items",
+  },
+];
+
 const Slider = () => {
   return (
-    <div className="mt-4">
-      <div className="w-full mx-auto mt-5">
-        <Swiper
-          modules={[Navigation, Pagination]}
-          spaceBetween={30}
-          slidesPerView={1}
-          navigation
-          pagination={{ clickable: true }}
-          loop={true}
-        >
-          <SwiperSlide>
-            <img
-              src={welcome}
-              className="w-full mx-auto h-[200px] md:h-[250px] lg:h-[500px] rounded-lg"
-            />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img
-              src={foundLostItems}
-              className="w-full mx-auto h-[200px] md:h-[250px] lg:h-[500px] rounded-lg"
-            />
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="flex border rounded-lg">
+    <div className="mt-6 max-w-7xl mx-auto px-4">
+      <Swiper
+        modules={[Navigation, Pagination, Autoplay]}
+        spaceBetween={30}
+        slidesPerView={1}
+        navigation
+        pagination={{ clickable: true }}
+        loop={true}
+        autoplay={{ delay: 3000, disableOnInteraction: false }}
+        preventClicks={false}
+        preventClicksPropagation={false}
+        className="rounded-lg overflow-hidden"
+      >
+        {slides.map(({ id, img, alt, title }) => (
+          <SwiperSlide key={id}>
+            <div className="relative group cursor-pointer rounded-lg overflow-hidden">
               <img
-                src={itemsBox}
-                className="flex-1/2 mx-auto h-[200px] md:h-[250px] lg:h-[500px] rounded-lg"
+                src={img}
+                alt={alt}
+                className="w-full h-[250px] md:h-[350px] lg:h-[500px] object-cover rounded-lg"
               />
-              <div className="flex-1/2 flex flex-col gap-3 lg:items-center justify-center">
-                <h1 className="font-medium lg:text-4xl lg:font-bold">
-                  Found Your Lost Items
-                </h1>
-                <Link to="/found-lost-items">
-                  <button className="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg xl:btn-xl hover:ml-2 hover:bg-green-500 hover:text-white transition duration-200">
-                    Found Lost Items <FaLocationArrow />
-                  </button>
-                </Link>
+
+              <div
+                className="absolute inset-0 
+             bg-gradient-to-t from-black/90 via-black/60 to-black/40
+             group-hover:from-transparent group-hover:via-transparent group-hover:to-transparent
+             transition-colors duration-700 ease-in-out rounded-lg"
+              />
+
+              <div
+                className="absolute inset-0 flex flex-col justify-center items-center p-6 text-center 
+                    transition-opacity duration-700 ease-in-out opacity-100 group-hover:opacity-0 
+                    pointer-events-none rounded-lg"
+              >
+                <h2 className="text-white text-2xl md:text-4xl font-bold mb-4 drop-shadow-md">
+                  {title}
+                </h2>
               </div>
             </div>
           </SwiperSlide>
-        </Swiper>
-      </div>
+        ))}
+      </Swiper>
     </div>
   );
 };
