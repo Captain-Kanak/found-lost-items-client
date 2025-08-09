@@ -14,6 +14,7 @@ import AboutUs from "../navigations/AboutUs";
 import TermsOfUse from "../pages/TermsOfUse";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
 import CookiePolicy from "../pages/CookiePolicy";
+import Contact from "../pages/Contact";
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ export const router = createBrowserRouter([
       {
         path: "aboutus",
         Component: AboutUs,
+      },
+      {
+        path: "contact",
+        Component: Contact,
       },
       {
         path: "terms",
