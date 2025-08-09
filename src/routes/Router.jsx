@@ -11,6 +11,9 @@ import MyItems from "../pages/MyItems";
 import RecoveredItems from "../pages/RecoveredItems";
 import ErrorPage from "../pages/ErrorPage";
 import AboutUs from "../navigations/AboutUs";
+import TermsOfUse from "../pages/TermsOfUse";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import CookiePolicy from "../pages/CookiePolicy";
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +45,18 @@ export const router = createBrowserRouter([
       {
         path: "aboutus",
         Component: AboutUs,
+      },
+      {
+        path: "terms",
+        Component: TermsOfUse,
+      },
+      {
+        path: "privacy",
+        Component: PrivacyPolicy,
+      },
+      {
+        path: "cookies",
+        Component: CookiePolicy,
       },
       {
         path: "/addItems",

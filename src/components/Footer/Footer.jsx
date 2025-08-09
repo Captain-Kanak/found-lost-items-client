@@ -77,28 +77,28 @@ const Footer = () => {
           </h6>
           <ul className="space-y-2">
             <li>
-              <a
-                href="/terms"
+              <Link
+                to="/terms"
                 className="link link-hover text-gray-600 hover:text-green-500 transition-colors"
               >
                 Terms of use
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="/privacy"
+              <Link
+                to="/privacy"
                 className="link link-hover text-gray-600 hover:text-green-500 transition-colors"
               >
                 Privacy policy
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="/cookies"
+              <Link
+                to="/cookies"
                 className="link link-hover text-gray-600 hover:text-green-500 transition-colors"
               >
                 Cookie policy
-              </a>
+              </Link>
             </li>
           </ul>
         </nav>
