@@ -23,6 +23,14 @@ export const router = createBrowserRouter([
         Component: FoundLostItems,
       },
       {
+        path: "/items/:id",
+        loader: ({ params }) =>
+          fetch(
+            `https://find-lost-items-server-psi.vercel.app/items/${params.id}`
+          ),
+        Component: ItemDetails,
+      },
+      {
         path: "/signIn",
         Component: SignIn,
       },
@@ -37,14 +45,6 @@ export const router = createBrowserRouter([
             <AddLostFoundItem />
           </PrivateRouter>
         ),
-      },
-      {
-        path: "/items/:id",
-        loader: ({ params }) =>
-          fetch(
-            `https://find-lost-items-server-psi.vercel.app/items/${params.id}`
-          ),
-        element: <ItemDetails />,
       },
       {
         path: "/allRecovered",

@@ -9,7 +9,7 @@ const SignIn = () => {
   const { signInUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
-  const destination = location?.state;
+  const from = location.state?.from?.pathname || "/";
 
   const handleSignIn = (e) => {
     e.preventDefault();
@@ -24,7 +24,7 @@ const SignIn = () => {
       .then((result) => {
         console.log(result.user);
 
-        navigate(destination || "/");
+        navigate(from, { replace: true });
         Swal.fire({
           title: "Welcome Back",
           icon: "success",
@@ -67,7 +67,7 @@ const SignIn = () => {
         </fieldset>
       </form>
       <div className="w-xs mx-auto divider">OR</div>
-      <SocialSignIn destination={destination} />
+      <SocialSignIn destination={from} />
       <div className="mt-3 flex items-center gap-1 justify-center w-xs mx-auto font-medium">
         <p>Don't Have an Account?</p>
         <Link to="/register" className="underline">

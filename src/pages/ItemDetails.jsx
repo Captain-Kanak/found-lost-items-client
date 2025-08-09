@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { useContext, useState } from "react";
 import { GoMail } from "react-icons/go";
 import { SlLocationPin } from "react-icons/sl";
-import { useLoaderData } from "react-router";
+import { Link, useLoaderData, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../contexts/AuthContext";
 import Modal from "react-modal";
 import DatePicker from "react-datepicker";
@@ -19,28 +19,38 @@ const ItemDetails = () => {
     title,
     thumbnail,
     category,
-    location,
+    location: itemLocation,
     date,
     description,
     contact_info,
-    status: initialStatus,
   } = item;
-  const { user } = useContext(AuthContext);
-  // const formattedDate = format(new Date(date), "KK:mm a, dd-MMM-yyyy");
-  const formattedDate = format(new Date(date), "PPpp");
-  const [status, setStatus] = useState(initialStatus);
 
+  const { user } = useContext(AuthContext);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const formattedDate = format(new Date(date), "PPpp");
   const [showModal, setShowModal] = useState(false);
   const [recoveredLocation, setRecoveredLocation] = useState("");
   const [recoveredDate, setRecoveredDate] = useState(new Date());
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
-    if (!recoveredLocation)
-      return toast.warning("Recovered location is required!");
+    if (!user) {
+      toast.error("Please log in to submit recovery information.");
+      setShowModal(false);
+      navigate("/signIn");
+      return;
+    }
 
-    if (recoveredDate > new Date())
-      return toast.warning("Recovered date cannot be in the future!");
+    if (!recoveredLocation) {
+      toast.warning("Recovered location is required!");
+      return;
+    }
+
+    if (recoveredDate > new Date()) {
+      toast.warning("Recovered date cannot be in the future!");
+      return;
+    }
 
     const recoveryInfo = {
       itemId: _id,
@@ -85,13 +95,9 @@ const ItemDetails = () => {
       );
 
       toast.success("Recovery submitted successfully!");
-      setStatus("recovered");
       setShowModal(false);
       setRecoveredLocation("");
       setRecoveredDate(new Date());
-      setTimeout(() => {
-        setShowModal(false);
-      }, 1500);
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong while submitting.");
@@ -105,12 +111,15 @@ const ItemDetails = () => {
       <Helmet>
         <title>Item Details - App</title>
       </Helmet>
+
+      <h1 className="my-5 text-center text-xl font-bold">Item Details Page</h1>
+
       <div className="lg:flex lg:gap-12">
         <div className="flex-1/2">
           <img
             className="border rounded-lg w-full h-[250px] lg:h-[350px]"
             src={thumbnail}
-            alt=""
+            alt={title}
           />
         </div>
 
@@ -121,7 +130,7 @@ const ItemDetails = () => {
 
           <p className="flex gap-1 items-center text-base">
             Location: <SlLocationPin size={14} />
-            {location}
+            {itemLocation}
           </p>
           <p>Date: {formattedDate}</p>
 
@@ -134,7 +143,7 @@ const ItemDetails = () => {
       </div>
 
       <div className="mt-2 flex items-center justify-center">
-        {status !== "recovered" && (
+        {user && (
           <>
             {post_type === "Lost" && (
               <button
@@ -155,9 +164,17 @@ const ItemDetails = () => {
           </>
         )}
 
-        {status === "recovered" && (
-          <p className="text-green-600 font-semibold">
-            ✅ Item already recovered
+        {!user && (
+          <p className="text-red-500 font-medium">
+            Please{" "}
+            <Link
+              to={"/signin"}
+              state={{ from: location }}
+              className="underline"
+            >
+              log in
+            </Link>{" "}
+            to submit recovery information.
           </p>
         )}
       </div>
@@ -165,7 +182,7 @@ const ItemDetails = () => {
       {/* modal */}
       <Modal
         isOpen={showModal}
-        onRequestClose={() => setShowModal(false)}
+        onRequestClose={() => !isSubmitting && setShowModal(false)}
         shouldCloseOnOverlayClick={!isSubmitting}
         shouldCloseOnEsc={!isSubmitting}
         className="bg-white p-6 rounded shadow-md max-w-md mx-auto mt-10"
@@ -189,22 +206,25 @@ const ItemDetails = () => {
           <DatePicker
             selected={recoveredDate}
             onChange={(date) => setRecoveredDate(date)}
+            maxDate={new Date()}
             className="w-full border px-3 py-2 rounded"
           />
         </div>
 
         <div className="mb-3">
           <label className="block font-medium">Recovered By:</label>
-          <div className="flex items-center gap-2">
-            <img
-              src={user?.photoURL || "https://i.ibb.co/XkzcZ8mD/user.png"}
-              alt="user"
-              className="w-8 h-8 rounded-full"
-            />
-            <span>
-              {user.displayName} ({user.email})
-            </span>
-          </div>
+          {user && (
+            <div className="flex items-center gap-2">
+              <img
+                src={user.photoURL || "https://i.ibb.co/XkzcZ8mD/user.png"}
+                alt="user"
+                className="w-8 h-8 rounded-full"
+              />
+              <span>
+                {user.displayName} ({user.email})
+              </span>
+            </div>
+          )}
         </div>
 
         <button

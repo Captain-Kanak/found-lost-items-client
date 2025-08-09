@@ -12,7 +12,7 @@ const SocialSignIn = ({ destination }) => {
       .then((result) => {
         console.log(result.user);
 
-        navigate(destination || "/");
+        navigate(destination, { replace: true });
         Swal.fire({
           title: "Welcome",
           icon: "success",
