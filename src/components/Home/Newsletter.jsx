@@ -24,7 +24,7 @@ const Newsletter = () => {
   return (
     <section
       data-aos="fade-right"
-      className="my-10 py-16 px-6 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 rounded-xl"
+      className="my-10 py-16 px-6 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 rounded-xl shadow-2xl"
     >
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-10 text-center">
         <h2 className="text-3xl font-semibold mb-3 relative inline-block">

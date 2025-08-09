@@ -7,7 +7,7 @@ import { motion } from "motion/react";
 
 const OurMission = () => {
   return (
-    <section data-aos="fade-right" className="my-12">
+    <section data-aos="fade-up" className="my-12">
       <div className="hero bg-base-200 min-h-[80vh] rounded-xl shadow-lg p-8">
         <div className="hero-content flex flex-col lg:flex-row-reverse gap-10 lg:gap-20 items-center">
           {/* Images grid */}
