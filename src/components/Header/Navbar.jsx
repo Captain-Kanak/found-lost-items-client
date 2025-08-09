@@ -36,17 +36,31 @@ const Navbar = () => {
   const links = (
     <>
       <li>
-        <NavLink to="/">Home</NavLink>
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            isActive ? "text-green-500 font-bold" : "hover:text-green-500"
+          }
+        >
+          Home
+        </NavLink>
       </li>
       <li>
-        <NavLink to="/found-lost-items">Found Lost Items</NavLink>
+        <NavLink
+          to="/found-lost-items"
+          className={({ isActive }) =>
+            isActive ? "text-green-500 font-bold" : "hover:text-green-500"
+          }
+        >
+          All Items
+        </NavLink>
       </li>
     </>
   );
 
   return (
-    <nav className="sticky top-0 z-10">
-      <div className="navbar bg-base-100 shadow-sm px-4 lg:px-28 relative">
+    <nav className="bg-white sticky top-0 z-10 shadow-sm">
+      <div className="navbar px-4 lg:px-0 relative max-w-7xl mx-auto">
         <div className="navbar-start">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -68,7 +82,7 @@ const Navbar = () => {
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-32 p-2 shadow"
             >
               {links}
             </ul>
@@ -78,7 +92,7 @@ const Navbar = () => {
           </h1>
         </div>
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1">{links}</ul>
+          <ul className="menu menu-horizontal px-1 text-base">{links}</ul>
         </div>
         <div className="navbar-end">
           {user ? (

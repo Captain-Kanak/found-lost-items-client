@@ -9,7 +9,7 @@ const ItemsCard = ({ item }) => {
 
   return (
     <div>
-      <div className="card bg-base-100 w-96 h-[400px] mx-auto shadow-sm">
+      <div className="card bg-base-100 h-[400px] mx-auto shadow-sm">
         <figure>
           <img className="rounded-lg w-full h-[250px]" src={thumbnail} />
         </figure>

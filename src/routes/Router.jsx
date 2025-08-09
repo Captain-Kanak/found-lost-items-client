@@ -44,11 +44,7 @@ export const router = createBrowserRouter([
           fetch(
             `https://find-lost-items-server-psi.vercel.app/items/${params.id}`
           ),
-        element: (
-          <PrivateRouter>
-            <ItemDetails />
-          </PrivateRouter>
-        ),
+        element: <ItemDetails />,
       },
       {
         path: "/allRecovered",
