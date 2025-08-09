@@ -6,7 +6,7 @@ const AboutUs = () => {
       <h1 className="text-4xl font-bold text-center mb-8">About Us</h1>
 
       <p className="mb-6 text-lg leading-relaxed text-gray-700">
-        Welcome to <span className="font-semibold">Find & Return</span>, your trusted
+        Welcome to <span className="font-semibold">ItemsTracker</span>, your trusted
         online platform dedicated to helping people find lost items and return them to their rightful owners.
       </p>
 

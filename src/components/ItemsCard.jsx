@@ -8,28 +8,40 @@ const ItemsCard = ({ item }) => {
   const formattedDate = format(new Date(date), "PPpp");
 
   return (
-    <div>
-      <div className="card bg-base-100 h-[400px] mx-auto shadow-sm">
-        <figure>
-          <img className="rounded-lg w-full h-[250px]" src={thumbnail} />
+    <div className="group">
+      <div className="card bg-base-100 h-[420px] mx-auto shadow-md hover:shadow-xl transition-all duration-300 rounded-xl overflow-hidden border border-gray-200">
+        {/* Image Section with Overlay */}
+        <figure className="relative h-[250px] overflow-hidden">
+          <img
+            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+            src={thumbnail}
+            alt={title}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-80"></div>
+          <span className="absolute top-3 left-3 badge badge-info text-white shadow-md">
+            {post_type}
+          </span>
         </figure>
-        <div className="card-body">
-          <h2 className="card-title">
+
+        {/* Card Body */}
+        <div className="card-body px-4 py-3">
+          <h2 className="card-title text-lg font-semibold group-hover:text-info transition-colors duration-300">
             {title}
-            <div className="badge badge-info text-white">{post_type}</div>
           </h2>
-          <div>
-            <p className="flex gap-1 items-center text-base">
-              <SlLocationPin size={14} />
+
+          {/* Location & Date */}
+          <div className="text-gray-600 text-sm space-y-1 mt-1">
+            <p className="flex gap-1 items-center">
+              <SlLocationPin size={14} className="text-info" />
               {location}
             </p>
-            <p className="flex gap-1 items-center text-base">
-              Date: {formattedDate}
-            </p>
+            <p>Date: {formattedDate}</p>
           </div>
-          <div className="card-actions justify-end">
+
+          {/* Button */}
+          <div className="card-actions justify-end mt-4">
             <Link to={`/items/${_id}`}>
-              <button className="btn btn-info text-white font-medium">
+              <button className="btn btn-info text-white font-medium rounded-lg px-4 py-2 shadow hover:shadow-lg hover:scale-105 transition-all duration-300">
                 View Details
               </button>
             </Link>

@@ -36,6 +36,9 @@ const LateastItems = () => {
       <h1 className="text-center text-2xl lg:text-3xl font-bold">
         Latest Lost & Found Items
       </h1>
+      <p className="text-center text-gray-500 mt-2">
+        Browse the most recently reported lost and found items in our community.
+      </p>
       <div className="mt-10 grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-4">
         {firstSix.map((item) => (
           <ItemsCard key={item._id} item={item} />
