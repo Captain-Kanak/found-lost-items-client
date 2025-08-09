@@ -33,7 +33,7 @@ const slides = [
 
 const Slider = () => {
   return (
-    <div className="mt-6 max-w-7xl mx-auto px-4">
+    <div className="mt-6">
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         spaceBetween={30}

@@ -8,7 +8,7 @@ const ItemsCard = ({ item }) => {
   const formattedDate = format(new Date(date), "PPpp");
 
   return (
-    <div className="group">
+    <div data-aos="zoom-in" className="group">
       <div className="card bg-base-100 h-[420px] mx-auto shadow-md hover:shadow-xl transition-all duration-300 rounded-xl overflow-hidden border border-gray-200">
         {/* Image Section with Overlay */}
         <figure className="relative h-[250px] overflow-hidden">

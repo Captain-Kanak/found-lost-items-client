@@ -31,7 +31,7 @@ const AboutOurStats = () => {
   ];
 
   return (
-    <div className="py-10 px-4 max-w-7xl mx-auto">
+    <div className="py-10">
       <h1 className="text-3xl font-extrabold text-center mb-10">Our Stats</h1>
 
       <div className="grid gap-8 grid-cols-1 md:grid-cols-3">

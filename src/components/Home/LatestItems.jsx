@@ -4,7 +4,7 @@ import axios from "axios";
 import ItemsCard from "../ItemsCard";
 import { Link } from "react-router";
 
-const LateastItems = () => {
+const LatestItems = () => {
   const { loading, setLoading } = useContext(AuthContext);
   const [items, setItems] = useState([]);
   const firstSix = items.slice(0, 8);
@@ -55,4 +55,4 @@ const LateastItems = () => {
   );
 };
 
-export default LateastItems;
+export default LatestItems;

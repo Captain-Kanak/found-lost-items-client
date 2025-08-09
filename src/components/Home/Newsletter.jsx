@@ -22,7 +22,10 @@ const Newsletter = () => {
   };
 
   return (
-    <section className="my-10 py-16 px-6 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 rounded-xl">
+    <section
+      data-aos="fade-right"
+      className="my-10 py-16 px-6 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 rounded-xl"
+    >
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-10 text-center">
         <h2 className="text-3xl font-semibold mb-3 relative inline-block">
           Stay in the Loop
@@ -47,7 +50,7 @@ const Newsletter = () => {
           />
           <button
             type="submit"
-            className="bg-green-500 text-white font-semibold px-8 py-3 rounded-md hover:bg-green-600 transition"
+            className="bg-green-500 text-white font-semibold px-8 py-3 rounded-md hover:bg-green-600 transition cursor-pointer"
           >
             Subscribe
           </button>
