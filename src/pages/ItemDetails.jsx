@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import useAuth from "../hooks/useAuth";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 import Spinner from "../components/Spinner";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 Modal.setAppElement("#root");
 
@@ -18,15 +19,19 @@ const ItemDetails = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
-
+  const axiosSecure = useAxiosSecure();
   const location = useLocation();
-
   const [showModal, setShowModal] = useState(false);
   const [recoveredLocation, setRecoveredLocation] = useState("");
   const [recoveredDate, setRecoveredDate] = useState(new Date());
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const { data: item = {}, isLoading } = useQuery({
+  const {
+    data: item = {},
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["item", id],
     enabled: !!id,
     queryFn: async () => {
@@ -37,13 +42,13 @@ const ItemDetails = () => {
 
   if (isLoading) return <Spinner />;
 
-  // Destructure from loaded data, with fallback empty object
   const {
     _id,
     post_type,
     title,
     thumbnail,
     category,
+    status,
     location: itemLocation,
     date,
     description,
@@ -54,16 +59,11 @@ const ItemDetails = () => {
 
   const handleSubmit = async () => {
     if (!recoveredLocation) {
-      toast.warning("Recovered location is required!");
+      setErrorMessage("Recovered location is required!");
       return;
     }
 
-    if (recoveredDate > new Date()) {
-      toast.warning("Recovered date cannot be in the future!");
-      return;
-    }
-
-    const recoveryInfo = {
+    const recoveredData = {
       itemId: _id,
       title,
       thumbnail,
@@ -71,41 +71,28 @@ const ItemDetails = () => {
       post_type,
       description,
       location: itemLocation,
-      recoveredLocation,
       publishedDate: date,
-      recoveredDate: recoveredDate.toISOString(),
       publishedBy: contact_info,
-      recoveredBy: {
+      recoveryInfo: {
         name: user.displayName,
         email: user.email,
         image: user.photoURL,
+        recoveredLocation,
+        recoveredDate: recoveredDate.toISOString(),
       },
     };
 
     try {
       setIsSubmitting(true);
 
-      // Add to recovered items
-      await fetch(
-        "https://find-lost-items-server-psi.vercel.app/recovered-items",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(recoveryInfo),
-        }
-      );
+      // Use axiosSecure.post for the recovered items
+      await axiosSecure.post("/recovered-items", recoveredData);
 
-      // Update this item status
-      await fetch(
-        `https://find-lost-items-server-psi.vercel.app/items/${_id}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status: "recovered" }),
-        }
-      );
+      // Use axiosSecure.patch for updating the item status
+      await axiosSecure.patch(`/items/${_id}`, { status: "recovered" });
 
-      toast.success("Recovery submitted successfully!");
+      toast.success("Recovered successfully!");
+      refetch();
       setShowModal(false);
       setRecoveredLocation("");
       setRecoveredDate(new Date());
@@ -123,125 +110,184 @@ const ItemDetails = () => {
         <title>Item Details - App</title>
       </Helmet>
 
-      <h1 className="my-5 text-center text-xl font-bold">Item Details Page</h1>
+      <h1 className="mb-8 text-center text-3xl font-extrabold tracking-wide text-gray-900">
+        Item Details
+      </h1>
 
-      <div className="lg:flex lg:gap-12">
-        <div className="flex-1/2">
+      <div className="flex flex-col lg:flex-row gap-8 bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">
+        {/* Image */}
+        <div className="lg:w-1/2 flex justify-center items-center bg-gray-50 p-4">
           <img
-            className="border rounded-lg w-full h-[250px] lg:h-[350px]"
+            className="rounded-md w-full max-h-[400px] object-cover shadow-sm hover:scale-105 transition-transform duration-300"
             src={thumbnail}
             alt={title}
           />
         </div>
 
-        <div className="flex-1/2 flex flex-col gap-3">
-          <h1>{title}</h1>
-          <h1>Post Type: {post_type}</h1>
-          <p>Category: {category}</p>
+        {/* Details */}
+        <div className="lg:w-1/2 p-6 flex flex-col justify-between">
+          <div>
+            <h2 className="text-2xl font-semibold mb-3 text-gray-800">
+              {title}
+            </h2>
 
-          <p className="flex gap-1 items-center text-base">
-            Location: <SlLocationPin size={14} />
-            {itemLocation}
-          </p>
-          <p>Date: {formattedDate}</p>
+            <div className="flex flex-wrap gap-3 text-sm sm:text-base text-gray-600 font-medium mb-5">
+              <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full shadow-sm">
+                Post Type: {post_type}
+              </span>
+              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full shadow-sm">
+                Category: {category}
+              </span>
+            </div>
 
-          <p className="flex gap-1 items-center text-base">
-            Contact: <GoMail size={14} />
-            {contact_info}
-          </p>
-          <p>{description}</p>
+            <p className="flex items-center gap-2 mb-2 text-gray-700">
+              <SlLocationPin className="text-indigo-500" size={18} />
+              <span>{itemLocation}</span>
+            </p>
+            <p className="mb-2 text-gray-700 font-medium">
+              Date: <time dateTime={date}>{formattedDate}</time>
+            </p>
+            <p className="flex items-center gap-2 mb-6 text-gray-700">
+              <GoMail className="text-indigo-500" size={18} />
+              <span>{contact_info}</span>
+            </p>
+
+            <p className="text-gray-600 whitespace-pre-line leading-relaxed">
+              {description}
+            </p>
+          </div>
+
+          {/* Action button or login message */}
+          <div className="mt-8 flex justify-center">
+            {user ? (
+              <>
+                {status === "recovered" ? (
+                  <p className="text-green-600 font-semibold text-lg">
+                    Item already recovered.
+                  </p>
+                ) : (
+                  <>
+                    {post_type === "Lost" && (
+                      <button
+                        onClick={() => setShowModal(true)}
+                        className="btn-primary px-6 py-3 rounded-full bg-indigo-600 text-white font-semibold hover:bg-indigo-700 shadow-md transition cursor-pointer"
+                      >
+                        Found This!
+                      </button>
+                    )}
+                    {post_type === "Found" && (
+                      <button
+                        onClick={() => setShowModal(true)}
+                        className="btn-primary px-6 py-3 rounded-full bg-indigo-600 text-white font-semibold hover:bg-indigo-700 shadow-md transition cursor-pointer"
+                      >
+                        This is Mine!
+                      </button>
+                    )}
+                  </>
+                )}
+              </>
+            ) : (
+              <p className="text-center text-red-600 font-semibold">
+                Please{" "}
+                <Link
+                  to={"/signin"}
+                  state={{ from: location }}
+                  className="underline hover:text-indigo-600"
+                >
+                  log in
+                </Link>{" "}
+                to submit recovery information.
+              </p>
+            )}
+          </div>
         </div>
-      </div>
-
-      <div className="mt-2 flex items-center justify-center">
-        {user ? (
-          <>
-            {post_type === "Lost" && (
-              <button
-                className="btn btn-primary"
-                onClick={() => setShowModal(true)}
-              >
-                Found This!
-              </button>
-            )}
-            {post_type === "Found" && (
-              <button
-                className="btn btn-primary"
-                onClick={() => setShowModal(true)}
-              >
-                This is Mine!
-              </button>
-            )}
-          </>
-        ) : (
-          <p className="text-red-500 font-medium">
-            Please{" "}
-            <Link
-              to={"/signin"}
-              state={{ from: location }}
-              className="underline"
-            >
-              log in
-            </Link>{" "}
-            to submit recovery information.
-          </p>
-        )}
       </div>
 
       {/* Modal */}
       <Modal
         isOpen={showModal}
-        onRequestClose={() => !isSubmitting && setShowModal(false)}
+        onRequestClose={() => {
+          if (!isSubmitting) {
+            setShowModal(false);
+            setErrorMessage(""); // Clear error on close
+          }
+        }}
         shouldCloseOnOverlayClick={!isSubmitting}
         shouldCloseOnEsc={!isSubmitting}
-        className="bg-white p-6 rounded shadow-md max-w-md mx-auto mt-10"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-start pt-20"
+        className="bg-white p-6 rounded-xl shadow-xl max-w-md mx-auto mt-10 outline-none"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-start pt-20 px-4"
       >
-        <h2 className="text-xl font-bold mb-4">Confirm Recovery</h2>
+        <h2 className="text-2xl font-bold mb-6 text-gray-900 text-center">
+          Confirm Recovery
+        </h2>
 
-        <div className="mb-3">
-          <label className="block font-medium">Recovered Location:</label>
+        <label className="block mb-1">
+          <span className="text-gray-700 font-semibold mb-1 block">
+            Recovered Location:
+          </span>
           <input
             type="text"
-            className="w-full border px-3 py-2 rounded"
+            className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 transition
+        ${
+          errorMessage
+            ? "border-red-500 focus:ring-red-500"
+            : "border-gray-300 focus:ring-indigo-500"
+        }`}
             value={recoveredLocation}
-            onChange={(e) => setRecoveredLocation(e.target.value)}
+            onChange={(e) => {
+              setRecoveredLocation(e.target.value);
+              if (errorMessage) setErrorMessage(""); // Clear error on input
+            }}
+            placeholder="Enter recovered location"
+            disabled={isSubmitting}
             required
           />
-        </div>
+        </label>
+        {/* Error message below input */}
+        {errorMessage && (
+          <p className="text-red-600 text-center text-sm mb-4">
+            {errorMessage}
+          </p>
+        )}
 
-        <div className="mb-3">
-          <label className="block font-medium">Recovered Date:</label>
+        {/* The rest unchanged */}
+        <label className="block mb-4">
+          <span className="text-gray-700 font-semibold mb-1 block">
+            Recovered Date:
+          </span>
           <DatePicker
             selected={recoveredDate}
             onChange={(date) => setRecoveredDate(date)}
             maxDate={new Date()}
-            className="w-full border px-3 py-2 rounded"
+            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+            disabled={isSubmitting}
           />
-        </div>
+        </label>
 
-        <div className="mb-3">
-          <label className="block font-medium">Recovered By:</label>
+        <div className="flex items-center gap-3 mb-6">
           {user && (
-            <div className="flex items-center gap-2">
+            <>
               <img
                 src={user.photoURL || "https://i.ibb.co/XkzcZ8mD/user.png"}
                 alt="user"
-                className="w-8 h-8 rounded-full"
+                className="w-10 h-10 rounded-full object-cover border border-gray-300"
               />
-              <span>
-                {user.displayName} ({user.email})
-              </span>
-            </div>
+              <div className="text-gray-700 font-medium">
+                {user.displayName} <br />{" "}
+                <span className="text-gray-500 text-sm">{user.email}</span>
+              </div>
+            </>
           )}
         </div>
 
         <button
           onClick={handleSubmit}
-          disabled={
-            isSubmitting || !recoveredLocation || recoveredDate > new Date()
-          }
-          className="btn btn-primary w-full mt-4"
+          disabled={isSubmitting}
+          className={`w-full py-3 rounded-full font-semibold transition cursor-pointer ${
+            isSubmitting
+              ? "bg-indigo-300 cursor-not-allowed"
+              : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg"
+          }`}
         >
           {isSubmitting ? "Submitting..." : "Submit"}
         </button>

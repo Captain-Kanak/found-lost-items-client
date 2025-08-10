@@ -1,28 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ItemsCard from "../components/ItemsCard";
 import { Helmet } from "react-helmet";
 import Spinner from "../components/Spinner";
-import useAuth from "../hooks/useAuth";
 import useAxiosPublic from "../hooks/useAxiosPublic";
+import { useQuery } from "@tanstack/react-query";
 
 const FoundLostItems = () => {
-  const { loading, setLoading } = useAuth();
   const axiosPublic = useAxiosPublic();
-  const [items, setItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    axiosPublic
-      .get("/items")
-      .then((response) => {
-        setItems(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching items:", error);
-        setLoading(false);
-      });
-  }, [axiosPublic, setLoading]);
+  const { data: items = [], isLoading } = useQuery({
+    queryKey: ["items"],
+    queryFn: async () => {
+      const res = await axiosPublic.get("/items");
+      return res.data;
+    },
+  });
 
   const filteredItems = items.filter(
     (item) =>
@@ -30,7 +23,7 @@ const FoundLostItems = () => {
       item.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (loading) return <Spinner />;
+  if (isLoading) return <Spinner />;
 
   return (
     <div className="py-8">

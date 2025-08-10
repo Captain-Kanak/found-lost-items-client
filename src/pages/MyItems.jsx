@@ -1,43 +1,38 @@
-import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../contexts/AuthContext";
+import React, { useState } from "react";
 import { Link } from "react-router";
 import Swal from "sweetalert2";
 import Modal from "react-modal";
 import DatePicker from "react-datepicker";
 import { Helmet } from "react-helmet";
+import { useQuery } from "@tanstack/react-query";
+import Spinner from "../components/Spinner";
+import useAuth from "../hooks/useAuth";
+import useAxiosSecure from "../hooks/useAxiosSecure";
+import { FaEdit, FaTrashAlt, FaPlusCircle } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
+import { MdOutlineFolderOff } from "react-icons/md";
 
 Modal.setAppElement("#root");
 
 const MyItems = () => {
-  const { user, loading, setLoading } = useContext(AuthContext);
-  const [items, setItems] = useState([]);
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  useEffect(() => {
-    if (!user?.email) return;
-
-    axios
-      .get(
-        `https://find-lost-items-server-psi.vercel.app/items?email=${user.email}`,
-        {
-          headers: {
-            authorization: `Bearer ${user.accessToken}`,
-          },
-        }
-      )
-      .then((result) => {
-        setItems(result.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [user, setLoading]);
+  const {
+    data: myItems = [],
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["myItems", user?.email],
+    enabled: !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/items?email=${user.email}`);
+      return res.data;
+    },
+  });
 
   const openModal = (item) => {
     setCurrentItem(item);
@@ -50,33 +45,25 @@ const MyItems = () => {
     setCurrentItem(null);
   };
 
-  const handleDelete = (id) => {
-    Swal.fire({
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
       title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      text: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#6b7280",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // delete item from db
-        axios
-          .delete(`https://find-lost-items-server-psi.vercel.app/items/${id}`)
-          .then(() => {
-            setItems(items.filter((item) => item._id !== id));
-          });
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your Item has been deleted.",
-          icon: "success",
-        });
-      }
     });
+
+    if (result.isConfirmed) {
+      await axiosSecure.delete(`/items/${id}`);
+      await refetch();
+      Swal.fire("Deleted!", "Your item has been removed.", "success");
+    }
   };
 
-  const handleUpdate = (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
     const form = e.target;
     const updatedItem = {
@@ -91,105 +78,103 @@ const MyItems = () => {
       date: selectedDate,
     };
 
-    axios
-      .put(
-        `https://find-lost-items-server-psi.vercel.app/items/${currentItem._id}`,
-        updatedItem
-      )
-      .then(() => {
-        const updatedList = items.map((item) =>
-          item._id === currentItem._id ? { ...item, ...updatedItem } : item
-        );
-        setItems(updatedList);
-        Swal.fire("Updated!", "Your item has been updated.", "success");
-        closeModal();
-      })
-      .catch((err) => console.error(err));
+    await axiosSecure.put(`/items/${currentItem._id}`, updatedItem);
+    await refetch();
+    Swal.fire("Updated!", "Your item has been updated.", "success");
+    closeModal();
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center p-10">
-        <span className="loading loading-spinner text-primary"></span>
-        <span className="loading loading-spinner text-secondary"></span>
-        <span className="loading loading-spinner text-accent"></span>
-      </div>
-    );
-  }
+  if (isLoading) return <Spinner />;
 
   return (
-    <div className="my-8 px-4 max-w-7xl mx-auto">
+    <div className="my-10 px-4 max-w-7xl mx-auto">
       <Helmet>
         <title>Your All Items - App</title>
       </Helmet>
-      <h2 className="text-center text-2xl font-semibold mb-4">
-        My Posted Items
+      <h2 className="text-center text-3xl font-bold mb-6 text-gray-800 flex items-center justify-center gap-2">
+        <FaPlusCircle className="text-blue-500" /> My Posted Items
       </h2>
-      <div>
-        {items.length === 0 ? (
-          <p className="text-gray-500 text-center text-xl">
-            You haven't added any items yet.
+
+      {myItems.length === 0 ? (
+        <div className="text-center py-10 text-gray-500 bg-gray-50 rounded-lg shadow-inner flex flex-col items-center gap-3">
+          <MdOutlineFolderOff className="text-5xl text-gray-400" />
+          <p className="text-xl font-medium">No items posted yet</p>
+          <p className="text-gray-400 text-sm">
+            Start by posting a lost or found item.
           </p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full border border-gray-300 shadow-md rounded-lg">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="px-4 py-2 text-left">Title</th>
-                  <th className="px-4 py-2 text-left">Type</th>
-                  <th className="px-4 py-2 text-left">Location</th>
-                  <th className="px-4 py-2 text-left">Actions</th>
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+            <thead className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white">
+              <tr>
+                <th className="px-4 py-3 text-left">Title</th>
+                <th className="px-4 py-3 text-left">Type</th>
+                <th className="px-4 py-3 text-left">Location</th>
+                <th className="px-4 py-3 text-left">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {myItems.map((item, idx) => (
+                <tr
+                  key={item._id}
+                  className={`${
+                    idx % 2 === 0 ? "bg-white" : "bg-gray-50"
+                  } hover:bg-blue-50 transition-colors`}
+                >
+                  <td className="px-4 py-3 font-medium text-gray-800">
+                    {item.title}
+                  </td>
+                  <td className="px-4 py-3">{item.post_type}</td>
+                  <td className="px-4 py-3">{item.location}</td>
+                  <td className="px-4 py-3 flex flex-col lg:flex-row gap-2">
+                    <button
+                      onClick={() => openModal(item)}
+                      className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-3 py-1 rounded shadow hover:scale-105 transition-transform cursor-pointer"
+                    >
+                      <FaEdit /> Update
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item._id)}
+                      className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 rounded shadow hover:scale-105 transition-transform cursor-pointer"
+                    >
+                      <FaTrashAlt /> Delete
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {items.map((item) => (
-                  <tr key={item._id} className="border-t">
-                    <td className="px-4 py-2">{item.title}</td>
-                    <td className="px-4 py-2">{item.post_type}</td>
-                    <td className="px-4 py-2">{item.location}</td>
-                    <td className="px-4 py-2 flex flex-col lg:flex-row gap-2 items-center">
-                      <Link>
-                        <button
-                          onClick={() => openModal(item)}
-                          className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-                        >
-                          Update
-                        </button>
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(item._id)}
-                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* Update Modal */}
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel="Update Item"
-        className="max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto mt-10 bg-white p-6 rounded shadow-lg"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-30 flex items-start justify-center z-50"
+        className="max-w-lg w-full mx-auto mt-10 bg-white p-6 rounded-xl shadow-xl relative"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-40 flex items-start justify-center z-50"
       >
-        <h3 className="text-lg font-bold mb-4">Update Item</h3>
+        <button
+          onClick={closeModal}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 cursor-pointer"
+        >
+          <IoMdClose size={24} />
+        </button>
+        <h3 className="text-xl font-semibold mb-4 text-gray-800 flex items-center gap-2">
+          <FaEdit className="text-blue-500" /> Update Item
+        </h3>
         <form
           onSubmit={handleUpdate}
-          className="space-y-1 max-h-[75vh] overflow-y-auto pr-2"
+          className="space-y-3 max-h-[70vh] overflow-y-auto pr-2"
         >
           <div>
             <label className="block font-medium">Type</label>
             <select
               name="post_type"
               defaultValue={currentItem?.post_type}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-200"
               required
             >
               <option value="Lost">Lost</option>
@@ -203,7 +188,7 @@ const MyItems = () => {
               type="url"
               name="thumbnail"
               defaultValue={currentItem?.thumbnail}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-200"
               required
             />
           </div>
@@ -214,7 +199,7 @@ const MyItems = () => {
               type="text"
               name="title"
               defaultValue={currentItem?.title}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-200"
               required
             />
           </div>
@@ -225,7 +210,7 @@ const MyItems = () => {
               type="text"
               name="description"
               defaultValue={currentItem?.description}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-200"
               required
             />
           </div>
@@ -236,7 +221,7 @@ const MyItems = () => {
               type="text"
               name="category"
               defaultValue={currentItem?.category}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-200"
               required
             />
           </div>
@@ -247,18 +232,18 @@ const MyItems = () => {
               type="text"
               name="location"
               defaultValue={currentItem?.location}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-200"
               required
             />
           </div>
 
-          <div className="mb-3">
+          <div>
             <label className="block font-medium">Updated Date:</label>
             <DatePicker
               selected={selectedDate}
               onChange={(date) => setSelectedDate(date)}
               name="date"
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-200"
               required
             />
           </div>
@@ -269,7 +254,7 @@ const MyItems = () => {
               type="text"
               name="user_name"
               defaultValue={user?.displayName}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border px-3 py-2 rounded bg-gray-100"
               readOnly
             />
           </div>
@@ -280,24 +265,24 @@ const MyItems = () => {
               type="text"
               name="contact_info"
               defaultValue={user?.email}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border px-3 py-2 rounded bg-gray-100"
               readOnly
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-2">
+          <div className="flex justify-end gap-3 pt-3">
             <button
               type="button"
               onClick={closeModal}
-              className="px-4 py-2 border rounded"
+              className="px-4 py-2 border rounded hover:bg-gray-100 transition flex items-center gap-1 cursor-pointer"
             >
-              Cancel
+              <IoMdClose /> Cancel
             </button>
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded"
+              className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-2 rounded shadow hover:scale-105 transition-transform cursor-pointer"
             >
-              Save Changes
+              <FaEdit /> Save Changes
             </button>
           </div>
         </form>

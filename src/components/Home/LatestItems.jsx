@@ -1,30 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ItemsCard from "../ItemsCard";
 import { Link } from "react-router";
 import Spinner from "../Spinner";
-import useAuth from "../../hooks/useAuth";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
+import { useQuery } from "@tanstack/react-query";
 
 const LatestItems = () => {
-  const { loading, setLoading } = useAuth();
   const axiosPublic = useAxiosPublic();
-  const [items, setItems] = useState([]);
+
+  const { data: items = [], isLoading } = useQuery({
+    queryKey: ["items"],
+    queryFn: async () => {
+      const res = await axiosPublic.get("/items");
+      return res.data;
+    },
+  });
+
   const firstSix = items.slice(0, 8);
 
-  useEffect(() => {
-    axiosPublic
-      .get("/items")
-      .then((response) => {
-        setItems(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching items:", error);
-        setLoading(false);
-      });
-  }, [axiosPublic, setLoading]);
-
-  if (loading) return <Spinner />;
+  if (isLoading) return <Spinner />;
 
   return (
     <div className="mt-12">
