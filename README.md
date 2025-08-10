@@ -2,6 +2,8 @@
 
 A web application where users can post lost and found items, browse listings, and mark items as recovered.
 
+**Live Link:** https://find-lost-items-993d8.web.app/
+
 ---
 
 ## Features
@@ -18,22 +20,12 @@ A web application where users can post lost and found items, browse listings, an
 
 ## Tech Stack
 
-- React 19  
-- TailwindCSS 4  
-- Firebase (Authentication & Firestore)  
-- React Query  
+- React  
+- TailwindCSS  
+- Firebase (Authentication)  
+- React Query
 - Axios  
-- React Router v7  
+- React Router  
 - React Icons, React Modal, React Datepicker  
 - SweetAlert2 for alerts  
 - Swiper for carousels  
-
----
-
-## Installation & Setup
-
-1. Clone the repo:
-
-   ```bash
-   git clone https://github.com/yourusername/lost-found.git
-   cd lost-found
