@@ -1,5 +1,7 @@
 {
   "projects": {
     "default": "find-lost-items-993d8"
-  }
+  },
+  "targets": {},
+  "etags": {}
 }
