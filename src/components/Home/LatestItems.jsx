@@ -1,17 +1,19 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import ItemsCard from "../ItemsCard";
 import { Link } from "react-router";
+import Spinner from "../Spinner";
+import useAuth from "../../hooks/useAuth";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 
 const LatestItems = () => {
-  const { loading, setLoading } = useContext(AuthContext);
+  const { loading, setLoading } = useAuth();
+  const axiosPublic = useAxiosPublic();
   const [items, setItems] = useState([]);
   const firstSix = items.slice(0, 8);
 
   useEffect(() => {
-    axios
-      .get("https://find-lost-items-server-psi.vercel.app/items")
+    axiosPublic
+      .get("/items")
       .then((response) => {
         setItems(response.data);
         setLoading(false);
@@ -20,16 +22,9 @@ const LatestItems = () => {
         console.error("Error fetching items:", error);
         setLoading(false);
       });
-  }, [setLoading]);
+  }, [axiosPublic, setLoading]);
 
-  if (loading)
-    return (
-      <div className="flex items-center justify-center p-10">
-        <span className="loading loading-spinner text-primary"></span>
-        <span className="loading loading-spinner text-secondary"></span>
-        <span className="loading loading-spinner text-accent"></span>
-      </div>
-    );
+  if (loading) return <Spinner />;
 
   return (
     <div className="mt-12">

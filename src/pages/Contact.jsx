@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { Helmet } from "react-helmet";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
+
 
 const Contact = () => {
   const { user } = useContext(AuthContext);

@@ -1,18 +1,43 @@
 import { format } from "date-fns";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { GoMail } from "react-icons/go";
 import { SlLocationPin } from "react-icons/sl";
-import { Link, useLoaderData, useLocation, useNavigate } from "react-router";
-import { AuthContext } from "../contexts/AuthContext";
+import { Link, useLocation, useParams } from "react-router";
 import Modal from "react-modal";
 import DatePicker from "react-datepicker";
-import { toast } from "react-toastify";
 import { Helmet } from "react-helmet";
+import toast from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
+import useAuth from "../hooks/useAuth";
+import useAxiosPublic from "../hooks/useAxiosPublic";
+import Spinner from "../components/Spinner";
 
 Modal.setAppElement("#root");
 
 const ItemDetails = () => {
-  const item = useLoaderData();
+  const { id } = useParams();
+  const { user } = useAuth();
+  const axiosPublic = useAxiosPublic();
+
+  const location = useLocation();
+
+  const [showModal, setShowModal] = useState(false);
+  const [recoveredLocation, setRecoveredLocation] = useState("");
+  const [recoveredDate, setRecoveredDate] = useState(new Date());
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { data: item = {}, isLoading } = useQuery({
+    queryKey: ["item", id],
+    enabled: !!id,
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/items/${id}`);
+      return res.data;
+    },
+  });
+
+  if (isLoading) return <Spinner />;
+
+  // Destructure from loaded data, with fallback empty object
   const {
     _id,
     post_type,
@@ -25,23 +50,9 @@ const ItemDetails = () => {
     contact_info,
   } = item;
 
-  const { user } = useContext(AuthContext);
-  const location = useLocation();
-  const navigate = useNavigate();
-  const formattedDate = format(new Date(date), "PPpp");
-  const [showModal, setShowModal] = useState(false);
-  const [recoveredLocation, setRecoveredLocation] = useState("");
-  const [recoveredDate, setRecoveredDate] = useState(new Date());
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const formattedDate = date ? format(new Date(date), "PPpp") : "";
 
   const handleSubmit = async () => {
-    if (!user) {
-      toast.error("Please log in to submit recovery information.");
-      setShowModal(false);
-      navigate("/signIn");
-      return;
-    }
-
     if (!recoveredLocation) {
       toast.warning("Recovered location is required!");
       return;
@@ -59,7 +70,7 @@ const ItemDetails = () => {
       category,
       post_type,
       description,
-      location,
+      location: itemLocation,
       recoveredLocation,
       publishedDate: date,
       recoveredDate: recoveredDate.toISOString(),
@@ -84,7 +95,7 @@ const ItemDetails = () => {
         }
       );
 
-      // Update this item
+      // Update this item status
       await fetch(
         `https://find-lost-items-server-psi.vercel.app/items/${_id}`,
         {
@@ -143,7 +154,7 @@ const ItemDetails = () => {
       </div>
 
       <div className="mt-2 flex items-center justify-center">
-        {user && (
+        {user ? (
           <>
             {post_type === "Lost" && (
               <button
@@ -162,9 +173,7 @@ const ItemDetails = () => {
               </button>
             )}
           </>
-        )}
-
-        {!user && (
+        ) : (
           <p className="text-red-500 font-medium">
             Please{" "}
             <Link
@@ -179,7 +188,7 @@ const ItemDetails = () => {
         )}
       </div>
 
-      {/* modal */}
+      {/* Modal */}
       <Modal
         isOpen={showModal}
         onRequestClose={() => !isSubmitting && setShowModal(false)}

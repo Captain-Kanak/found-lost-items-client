@@ -99,7 +99,7 @@ const Navbar = () => {
                 {/* Dropdown below avatar */}
                 <div
                   ref={dropdownRef}
-                  className={`absolute right-0 top-full mt-2 w-60 bg-white bg-opacity-95 backdrop-blur-sm rounded-xl 
+                  className={`absolute right-0 top-full mt-2 w-60 bg-gray-100 bg-opacity-95 backdrop-blur-sm rounded-xl 
                     shadow-xl flex flex-col p-4 gap-3 transform origin-top-right transition-all duration-250 ease-out ${
                       isOpen
                         ? "opacity-100 scale-100 pointer-events-auto"

@@ -1,16 +1,17 @@
-import React, { useContext, useState } from "react";
-import { AuthContext } from "../contexts/AuthContext";
+import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import axios from "axios";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import { Helmet } from "react-helmet";
+import useAxiosSecure from "../hooks/useAxiosSecure";
+import useAuth from "../hooks/useAuth";
+import toast from "react-hot-toast";
 
 const AddLostFoundItem = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
 
   const handleAddItem = (e) => {
     e.preventDefault();
@@ -20,8 +21,8 @@ const AddLostFoundItem = () => {
     const data = Object.fromEntries(formData.entries());
     data.date = selectedDate.toISOString();
 
-    axios
-      .post("https://find-lost-items-server-psi.vercel.app/items", data)
+    axiosSecure
+      .post("/items", data)
       .then((result) => {
         if (result.data?.insertedId) {
           navigate("/found-lost-items");
@@ -169,7 +170,7 @@ const AddLostFoundItem = () => {
             </label>
             <DatePicker
               id="date"
-              className="w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-300 px-4 py-3 text-gray-700 placeholder-gray-400 transition"
+              className="w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-300 px-4 py-3 text-gray-700 placeholder-gray-400 transition cursor-pointer"
               selected={selectedDate}
               onChange={(date) => setSelectedDate(date)}
               dateFormat="MMMM d, yyyy"
@@ -198,7 +199,7 @@ const AddLostFoundItem = () => {
 
           <button
             type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 transition text-white font-semibold rounded-lg py-3 mt-6 shadow-md shadow-indigo-300/50"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 transition text-white font-semibold rounded-lg py-3 mt-6 shadow-md shadow-indigo-300/50 cursor-pointer"
           >
             Add Item
           </button>

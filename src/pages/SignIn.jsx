@@ -67,7 +67,7 @@ const SignIn = () => {
         </fieldset>
       </form>
       <div className="w-xs mx-auto divider">OR</div>
-      <SocialSignIn destination={from} />
+      <SocialSignIn from={from} />
       <div className="mt-3 flex items-center gap-1 justify-center w-xs mx-auto font-medium">
         <p>Don't Have an Account?</p>
         <Link to="/register" className="underline">

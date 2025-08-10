@@ -1,17 +1,19 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../contexts/AuthContext";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import ItemsCard from "../components/ItemsCard";
 import { Helmet } from "react-helmet";
+import Spinner from "../components/Spinner";
+import useAuth from "../hooks/useAuth";
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
 const FoundLostItems = () => {
-  const { loading, setLoading } = useContext(AuthContext);
+  const { loading, setLoading } = useAuth();
+  const axiosPublic = useAxiosPublic();
   const [items, setItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    axios
-      .get("https://find-lost-items-server-psi.vercel.app/items")
+    axiosPublic
+      .get("/items")
       .then((response) => {
         setItems(response.data);
         setLoading(false);
@@ -20,7 +22,7 @@ const FoundLostItems = () => {
         console.error("Error fetching items:", error);
         setLoading(false);
       });
-  }, [setLoading]);
+  }, [axiosPublic, setLoading]);
 
   const filteredItems = items.filter(
     (item) =>
@@ -28,14 +30,7 @@ const FoundLostItems = () => {
       item.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (loading)
-    return (
-      <div className="flex items-center justify-center p-10">
-        <span className="loading loading-spinner text-primary"></span>
-        <span className="loading loading-spinner text-secondary"></span>
-        <span className="loading loading-spinner text-accent"></span>
-      </div>
-    );
+  if (loading) return <Spinner />;
 
   return (
     <div className="py-8">

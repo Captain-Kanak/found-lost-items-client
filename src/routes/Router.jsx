@@ -29,10 +29,6 @@ export const router = createBrowserRouter([
       },
       {
         path: "/items/:id",
-        loader: ({ params }) =>
-          fetch(
-            `https://find-lost-items-server-psi.vercel.app/items/${params.id}`
-          ),
         Component: ItemDetails,
       },
       {
