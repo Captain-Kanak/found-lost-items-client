@@ -132,7 +132,7 @@ const MyItems = () => {
                 <div className="mt-4 flex gap-2">
                   <button
                     onClick={() => openModal(item)}
-                    className="flex-1 flex items-center justify-center gap-1 bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-3 py-2 rounded shadow hover:scale-105 transition cursor-pointer"
+                    className="flex-1 flex items-center justify-center gap-1 bg-green-500 text-white px-3 py-2 rounded shadow hover:scale-105 transition cursor-pointer"
                   >
                     <FaEdit /> Update
                   </button>
