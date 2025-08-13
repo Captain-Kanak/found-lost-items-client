@@ -68,12 +68,12 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100">
+    <div className="min-h-screen flex items-center justify-center py-8 lg:py-0">
       <Helmet>
         <title>Register - App</title>
       </Helmet>
 
-      <div className="w-full max-w-md bg-white/70 backdrop-blur-lg rounded-2xl shadow-lg p-8 border border-white/40">
+      <div className="w-full max-w-md bg-white/70 backdrop-blur-lg rounded-2xl shadow-lg p-4 lg:p-8 border border-white/40">
         {/* Title */}
         <h1 className="text-center text-3xl font-extrabold text-gray-800 mb-6">
           Create a New Account
