@@ -199,7 +199,7 @@ const AddLostFoundItem = () => {
 
           <button
             type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 transition text-white font-semibold rounded-lg py-3 mt-6 shadow-md shadow-indigo-300/50 cursor-pointer"
+            className="w-full bg-green-500 hover:bg-green-600 transition text-white font-semibold rounded-lg py-3 mt-6 shadow-md shadow-indigo-300/50 cursor-pointer"
           >
             Add Item
           </button>

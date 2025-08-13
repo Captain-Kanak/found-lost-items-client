@@ -16,9 +16,11 @@ const LatestItems = () => {
     },
   });
 
-  const firstSix = items.slice(0, 8);
+  const firstEight = items.slice(0, 8);
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="mt-12">
@@ -29,13 +31,13 @@ const LatestItems = () => {
         Browse the most recently reported lost and found items in our community.
       </p>
       <div className="mt-10 grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-4">
-        {firstSix.map((item) => (
+        {firstEight.map((item) => (
           <ItemsCard key={item._id} item={item} />
         ))}
       </div>
       <div className="my-8 flex items-center justify-center">
         <Link to="/found-lost-items">
-          <button className="btn btn-success text-lg text-white font-medium">
+          <button className="bg-green-500 text-white font-semibold px-8 py-3 rounded-md hover:bg-green-600 transition cursor-pointer">
             See All
           </button>
         </Link>

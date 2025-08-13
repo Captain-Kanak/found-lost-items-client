@@ -131,8 +131,7 @@ const Navbar = () => {
                   {/* Sign Out Button */}
                   <button
                     onClick={handleSignOut}
-                    className="flex items-center gap-2 border border-green-600 text-green-600 rounded-md px-4 py-2 
-                    font-semibold hover:bg-green-600 hover:text-white transition cursor-pointer"
+                    className="flex items-center justify-center gap-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition cursor-pointer"
                     title="Sign Out"
                   >
                     <FaSignOutAlt /> Sign Out
@@ -143,19 +142,8 @@ const Navbar = () => {
           ) : (
             <>
               <Link to="/signIn">
-                <button
-                  className="border border-green-600 text-green-600 rounded-md px-4 py-2 font-semibold
-                 hover:bg-green-600 hover:text-white transition cursor-pointer"
-                >
+                <button className="bg-green-500 text-white lg:font-semibold px-4 lg:px-8 py-2 lg:py-3 rounded-md hover:bg-green-600 transition cursor-pointer">
                   Sign In
-                </button>
-              </Link>
-              <Link to="/register">
-                <button
-                  className="border border-green-600 text-green-600 rounded-md px-4 py-2 font-semibold
-                 hover:bg-green-600 hover:text-white transition cursor-pointer"
-                >
-                  Register
                 </button>
               </Link>
             </>

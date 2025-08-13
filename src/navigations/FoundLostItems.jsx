@@ -8,6 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 const FoundLostItems = () => {
   const axiosPublic = useAxiosPublic();
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortPostType, setSortPostType] = useState(""); // Lost, Found
+  const [sortCategory, setSortCategory] = useState(""); // Electronics, Clothing, etc.
 
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["items"],
@@ -17,11 +19,14 @@ const FoundLostItems = () => {
     },
   });
 
-  const filteredItems = items.filter(
-    (item) =>
-      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredItems = items
+    .filter(
+      (item) =>
+        item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.location.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter((item) => (sortPostType ? item.post_type === sortPostType : true))
+    .filter((item) => (sortCategory ? item.category === sortCategory : true));
 
   if (isLoading) return <Spinner />;
 
@@ -34,8 +39,9 @@ const FoundLostItems = () => {
         Find Your Lost Items Through Our Network
       </h1>
 
-      {/* Search Input */}
-      <div className="mb-8 max-w-md mx-auto">
+      {/* Search + Sort Controls */}
+      <div className="mb-8 max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Search */}
         <input
           type="text"
           placeholder="Search by title or location..."
@@ -43,8 +49,34 @@ const FoundLostItems = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
+
+        {/* Sort by Post Type */}
+        <select
+          value={sortPostType}
+          onChange={(e) => setSortPostType(e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          <option value="">All Types</option>
+          <option value="Lost">Lost</option>
+          <option value="Found">Found</option>
+        </select>
+
+        {/* Sort by Category */}
+        <select
+          value={sortCategory}
+          onChange={(e) => setSortCategory(e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          <option value="">All Categories</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Documents">Documents</option>
+          <option value="Accessories">Accessories</option>
+          {/* You can add more categories as needed */}
+        </select>
       </div>
 
+      {/* Items List */}
       <div>
         {filteredItems.length > 0 ? (
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">

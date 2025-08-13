@@ -37,7 +37,7 @@ const RecoveredItems = () => {
         <button
           onClick={() => setIsTableView(false)}
           className={`btn flex items-center gap-2 ${
-            !isTableView ? "btn-primary" : "btn-outline"
+            !isTableView ? "btn bg-green-500 text-white" : "btn-outline"
           }`}
         >
           <PiCards size={20} />
@@ -47,7 +47,7 @@ const RecoveredItems = () => {
         <button
           onClick={() => setIsTableView(true)}
           className={`btn flex items-center gap-2 ${
-            isTableView ? "btn-primary" : "btn-outline"
+            isTableView ? "btn bg-green-500 text-white" : "btn-outline"
           }`}
         >
           <RiTableView size={20} />

@@ -163,7 +163,7 @@ const ItemDetails = () => {
               <>
                 {status === "recovered" ? (
                   <p className="text-green-600 font-semibold text-lg">
-                    Item already recovered.
+                    ✅ Item recovered Successfully.
                   </p>
                 ) : (
                   <>

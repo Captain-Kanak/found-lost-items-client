@@ -29,7 +29,7 @@ const MyItems = () => {
     queryKey: ["myItems", user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/items?email=${user.email}`);
+      const res = await axiosSecure.get(`/myItems?email=${user.email}`);
       return res.data;
     },
   });
@@ -87,7 +87,7 @@ const MyItems = () => {
   if (isLoading) return <Spinner />;
 
   return (
-    <div className="my-10 px-4 max-w-7xl mx-auto">
+    <div className="my-10 max-w-7xl mx-auto">
       <Helmet>
         <title>Your All Items - App</title>
       </Helmet>
@@ -104,47 +104,48 @@ const MyItems = () => {
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full border border-gray-200 rounded-lg shadow-lg overflow-hidden">
-            <thead className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white">
-              <tr>
-                <th className="px-4 py-3 text-left">Title</th>
-                <th className="px-4 py-3 text-left">Type</th>
-                <th className="px-4 py-3 text-left">Location</th>
-                <th className="px-4 py-3 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {myItems.map((item, idx) => (
-                <tr
-                  key={item._id}
-                  className={`${
-                    idx % 2 === 0 ? "bg-white" : "bg-gray-50"
-                  } hover:bg-blue-50 transition-colors`}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {myItems.map((item) => (
+            <div
+              key={item._id}
+              className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden flex flex-col"
+            >
+              <img
+                src={item.thumbnail}
+                alt={item.title}
+                className="h-48 w-full object-cover"
+              />
+              <div className="p-4 flex flex-col flex-1">
+                <h3 className="text-lg font-semibold text-gray-800 mb-1">
+                  {item.title}
+                </h3>
+                <span
+                  className={`px-2 py-1 text-xs rounded-full self-start mb-2 ${
+                    item.post_type === "Found"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
                 >
-                  <td className="px-4 py-3 font-medium text-gray-800">
-                    {item.title}
-                  </td>
-                  <td className="px-4 py-3">{item.post_type}</td>
-                  <td className="px-4 py-3">{item.location}</td>
-                  <td className="px-4 py-3 flex flex-col lg:flex-row gap-2">
-                    <button
-                      onClick={() => openModal(item)}
-                      className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-3 py-1 rounded shadow hover:scale-105 transition-transform cursor-pointer"
-                    >
-                      <FaEdit /> Update
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item._id)}
-                      className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 rounded shadow hover:scale-105 transition-transform cursor-pointer"
-                    >
-                      <FaTrashAlt /> Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  {item.post_type}
+                </span>
+                <p className="text-sm text-gray-600 flex-1">{item.location}</p>
+                <div className="mt-4 flex gap-2">
+                  <button
+                    onClick={() => openModal(item)}
+                    className="flex-1 flex items-center justify-center gap-1 bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-3 py-2 rounded shadow hover:scale-105 transition cursor-pointer"
+                  >
+                    <FaEdit /> Update
+                  </button>
+                  <button
+                    onClick={() => handleDelete(item._id)}
+                    className="flex-1 flex items-center justify-center gap-1 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-2 rounded shadow hover:scale-105 transition cursor-pointer"
+                  >
+                    <FaTrashAlt /> Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

@@ -14,65 +14,100 @@ const SignIn = () => {
   const handleSignIn = (e) => {
     e.preventDefault();
 
-    // get form data
     const form = e.target;
     const email = form.email.value;
     const password = form.password.value;
 
-    // sign in user with email & password
     signInUser(email, password)
-      .then((result) => {
-        console.log(result.user);
-
+      .then(() => {
         navigate(from, { replace: true });
         Swal.fire({
-          title: "Welcome Back",
+          title: "Welcome Back! 🎉",
           icon: "success",
-          timer: 1000,
-          didOpen: () => {
-            Swal.showLoading();
-          },
+          timer: 1200,
+          showConfirmButton: false,
         });
       })
       .catch((error) => {
-        console.log(error);
+        Swal.fire({
+          title: "Login Failed",
+          text: error.message,
+          icon: "error",
+        });
       });
   };
 
   return (
-    <div className="py-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100">
       <Helmet>
-        <title>Signin - App</title>
+        <title>Sign In - App</title>
       </Helmet>
-      <form onSubmit={handleSignIn}>
-        <h1 className="text-center text-2xl font-bold">Login Your Account</h1>
-        <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs mx-auto border p-4 mt-5">
-          <label className="label">Email</label>
-          <input
-            type="email"
-            name="email"
-            className="input"
-            placeholder="Enter Email"
-          />
 
-          <label className="label">Password</label>
-          <input
-            type="password"
-            name="password"
-            className="input"
-            placeholder="Enter Password"
-          />
+      <div className="w-full max-w-md bg-white/70 backdrop-blur-lg rounded-2xl shadow-lg p-8 border border-white/40">
+        {/* Title */}
+        <h1 className="text-center text-3xl font-extrabold text-gray-800 mb-6">
+          Login to Your Account
+        </h1>
 
-          <button className="btn btn-neutral mt-4">Login</button>
-        </fieldset>
-      </form>
-      <div className="w-xs mx-auto divider">OR</div>
-      <SocialSignIn from={from} />
-      <div className="mt-3 flex items-center gap-1 justify-center w-xs mx-auto font-medium">
-        <p>Don't Have an Account?</p>
-        <Link to="/register" className="underline">
-          Register
-        </Link>
+        {/* Form */}
+        <form onSubmit={handleSignIn} className="space-y-5">
+          {/* Email */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              required
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+              placeholder="Enter your email"
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              required
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+              placeholder="Enter your password"
+            />
+          </div>
+
+          {/* Login Button */}
+          <button
+            type="submit"
+            className="w-full py-3 rounded-lg text-white text-lg font-semibold bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 transition-all duration-300 shadow-md cursor-pointer"
+          >
+            Login
+          </button>
+        </form>
+
+        {/* Divider */}
+        <div className="flex items-center my-6">
+          <hr className="flex-1 border-gray-300" />
+          <span className="px-4 text-gray-500 text-sm">OR</span>
+          <hr className="flex-1 border-gray-300" />
+        </div>
+
+        {/* Social Sign In */}
+        <SocialSignIn from={from} />
+
+        {/* Register Link */}
+        <p className="mt-5 text-center text-gray-600">
+          Don’t have an account?{" "}
+          <Link
+            to="/register"
+            className="text-green-600 hover:underline font-medium"
+          >
+            Register
+          </Link>
+        </p>
       </div>
     </div>
   );

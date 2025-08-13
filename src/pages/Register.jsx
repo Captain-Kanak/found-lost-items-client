@@ -13,58 +13,46 @@ const Register = () => {
   const handleRegister = (e) => {
     e.preventDefault();
 
-    // get form data
     const form = e.target;
     const name = form.name.value;
     const email = form.email.value;
     const photo = form.photo.value;
     const password = form.password.value;
 
-    // Password validation rules
+    // Password validation
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
     const isLongEnough = password.length >= 6;
 
-    if (!hasUpperCase) {
+    if (!hasUpperCase)
       return setErrorMessage(
         "Password must contain at least one uppercase letter."
       );
-    }
-
-    if (!hasLowerCase) {
+    if (!hasLowerCase)
       return setErrorMessage(
         "Password must contain at least one lowercase letter."
       );
-    }
-
-    if (!isLongEnough) {
+    if (!isLongEnough)
       return setErrorMessage("Password must be at least 6 characters long.");
-    }
 
-    // create user
+    // Create user
     createUser(email, password)
       .then(() => {
-        const userInfo = {
-          displayName: name,
-          photoURL: photo,
-        };
-
+        const userInfo = { displayName: name, photoURL: photo };
         updateUserProfile(userInfo)
           .then(() => {
-            form.reset(); // Clear form
+            form.reset();
             navigate("/");
             Swal.fire({
-              title: "Account Created Successfully!",
+              title: "🎉 Account Created Successfully!",
               icon: "success",
-              timer: 1000,
-              didOpen: () => {
-                Swal.showLoading();
-              },
+              timer: 1200,
+              showConfirmButton: false,
             });
           })
           .catch((error) => {
             Swal.fire({
-              title: "Profile Update Failed!",
+              title: "Profile Update Failed",
               text: error.message,
               icon: "error",
             });
@@ -72,7 +60,7 @@ const Register = () => {
       })
       .catch((error) => {
         Swal.fire({
-          title: "Registration Failed!",
+          title: "Registration Failed",
           text: error.message,
           icon: "error",
         });
@@ -80,56 +68,108 @@ const Register = () => {
   };
 
   return (
-    <div className="py-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100">
       <Helmet>
         <title>Register - App</title>
       </Helmet>
-      <form onSubmit={handleRegister}>
-        <h1 className="text-center text-2xl font-bold">Create a New Account</h1>
-        <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs mx-auto border p-4 mt-5">
-          <label className="label">Name</label>
-          <input
-            type="text"
-            name="name"
-            className="input"
-            placeholder="Enter Name"
-          />
 
-          <label className="label">Email</label>
-          <input
-            type="email"
-            name="email"
-            className="input"
-            placeholder="Enter Email"
-          />
+      <div className="w-full max-w-md bg-white/70 backdrop-blur-lg rounded-2xl shadow-lg p-8 border border-white/40">
+        {/* Title */}
+        <h1 className="text-center text-3xl font-extrabold text-gray-800 mb-6">
+          Create a New Account
+        </h1>
 
-          <label className="label">Photo</label>
-          <input
-            type="url"
-            name="photo"
-            className="input"
-            placeholder="Enter Photo URL"
-          />
+        {/* Form */}
+        <form onSubmit={handleRegister} className="space-y-5">
+          {/* Name */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Name</label>
+            <input
+              type="text"
+              name="name"
+              required
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-pink-400 focus:outline-none"
+              placeholder="Enter your name"
+            />
+          </div>
 
-          <label className="label">Password</label>
-          <input
-            type="password"
-            name="password"
-            className="input"
-            placeholder="Enter Password"
-          />
+          {/* Email */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              required
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-pink-400 focus:outline-none"
+              placeholder="Enter your email"
+            />
+          </div>
 
-          <button className="btn btn-neutral mt-4">Register</button>
-        </fieldset>
-        <p className="text-center text-red-500">{errorMessage}</p>
-      </form>
-      <div className="w-xs mx-auto divider">OR</div>
-      <SocialSignIn />
-      <div className="mt-3 flex items-center gap-1 justify-center w-xs mx-auto font-medium">
-        <p>Already Have an Account?</p>
-        <Link to="/signin" className="underline">
-          SignIn
-        </Link>
+          {/* Photo URL */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Photo URL
+            </label>
+            <input
+              type="url"
+              name="photo"
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-pink-400 focus:outline-none"
+              placeholder="Enter photo URL"
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              required
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-pink-400 focus:outline-none"
+              placeholder="Enter password"
+            />
+          </div>
+
+          {/* Error Message */}
+          {errorMessage && (
+            <p className="text-center text-red-500 font-medium">
+              {errorMessage}
+            </p>
+          )}
+
+          {/* Register Button */}
+          <button
+            type="submit"
+            className="w-full py-3 rounded-lg text-white text-lg font-semibold bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 transition-all duration-300 shadow-md cursor-pointer"
+          >
+            Register
+          </button>
+        </form>
+
+        {/* Divider */}
+        <div className="flex items-center my-6">
+          <hr className="flex-1 border-gray-300" />
+          <span className="px-4 text-gray-500 text-sm">OR</span>
+          <hr className="flex-1 border-gray-300" />
+        </div>
+
+        {/* Social Sign In */}
+        <SocialSignIn />
+
+        {/* Sign In Link */}
+        <p className="mt-5 text-center text-gray-600">
+          Already have an account?{" "}
+          <Link
+            to="/signin"
+            className="text-green-600 hover:underline font-medium"
+          >
+            Sign In
+          </Link>
+        </p>
       </div>
     </div>
   );
