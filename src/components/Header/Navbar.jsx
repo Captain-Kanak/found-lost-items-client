@@ -1,12 +1,13 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, NavLink } from "react-router";
 import { AuthContext } from "../../contexts/AuthContext";
 import { FaSignOutAlt, FaUser } from "react-icons/fa";
 import { FiPlusCircle, FiArchive, FiMenu, FiX } from "react-icons/fi";
 import { MdManageAccounts } from "react-icons/md";
+import useAuth from "../../hooks/useAuth";
 
 const Navbar = () => {
-  const { user, signOutUser } = useContext(AuthContext);
+  const { user, signOutUser } = useAuth();
   const [isOpen, setOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);

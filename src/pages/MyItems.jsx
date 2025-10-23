@@ -18,11 +18,13 @@ import handleUploadImage from "../tools/handleUploadImage";
 Modal.setAppElement("#root");
 
 const MyItems = () => {
-  const { user } = useAuth();
+  const { user, dbUser } = useAuth();
   const axiosSecure = useAxiosSecure();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  console.log(dbUser);
 
   // --- NEW STATES FOR IMAGE UPLOAD IN UPDATE MODAL ---
   const [selectedFileForUpdate, setSelectedFileForUpdate] = useState(null);

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router";
@@ -6,9 +6,10 @@ import SocialSignIn from "../components/SocialSignIn/SocialSignIn";
 import { Helmet } from "react-helmet";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 import handleUploadImage from "../tools/handleUploadImage";
+import useAuth from "../hooks/useAuth";
 
 const Register = () => {
-  const { createUser, updateUserProfile } = useContext(AuthContext);
+  const { createUser, updateUserProfile } = useAuth();
   const [errorMessage, setErrorMessage] = useState("");
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(null);

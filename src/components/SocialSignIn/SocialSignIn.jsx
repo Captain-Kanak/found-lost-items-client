@@ -1,11 +1,12 @@
-import React, { useContext } from "react";
+import React from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
+import useAuth from "../../hooks/useAuth";
 
 const SocialSignIn = ({ from = "/" }) => {
-  const { googleSignIn } = useContext(AuthContext);
+  const { googleSignIn } = useAuth();
   const navigate = useNavigate();
   const axiosPublic = useAxiosPublic();
 
