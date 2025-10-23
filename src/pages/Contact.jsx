@@ -3,7 +3,6 @@ import { AuthContext } from "../contexts/AuthContext";
 import { Helmet } from "react-helmet";
 import toast from "react-hot-toast";
 
-
 const Contact = () => {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);

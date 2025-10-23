@@ -1,8 +1,8 @@
 import axios from "axios";
-import React from "react";
 
 const instance = axios.create({
-  baseURL: "https://find-lost-items-server-psi.vercel.app",
+  // baseURL: "https://find-lost-items-server-psi.vercel.app",
+  baseURL: "http://localhost:3000",
 });
 
 const useAxiosPublic = () => {

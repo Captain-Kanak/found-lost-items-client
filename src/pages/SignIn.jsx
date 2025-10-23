@@ -22,7 +22,7 @@ const SignIn = () => {
       .then(() => {
         navigate(from, { replace: true });
         Swal.fire({
-          title: "Welcome Back! 🎉",
+          title: "Welcome Back!",
           icon: "success",
           timer: 1200,
           showConfirmButton: false,

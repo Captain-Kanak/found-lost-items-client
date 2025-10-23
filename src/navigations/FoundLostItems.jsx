@@ -8,8 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 const FoundLostItems = () => {
   const axiosPublic = useAxiosPublic();
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortPostType, setSortPostType] = useState(""); // Lost, Found
-  const [sortCategory, setSortCategory] = useState(""); // Electronics, Clothing, etc.
+  const [sortPostType, setSortPostType] = useState("");
+  const [sortCategory, setSortCategory] = useState("");
 
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["items"],

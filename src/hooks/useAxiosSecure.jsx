@@ -2,7 +2,8 @@ import axios from "axios";
 import useAuth from "./useAuth";
 
 const instance = axios.create({
-  baseURL: "https://find-lost-items-server-psi.vercel.app",
+  // baseURL: "https://find-lost-items-server-psi.vercel.app",
+  baseURL: "http://localhost:3000",
 });
 
 const useAxiosSecure = () => {

@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import App from "../App";
-import Home from "../navigations/Home";
+import Home from "../navigations/Home.jsx";
 import Register from "../pages/Register";
 import SignIn from "../pages/SignIn";
 import FoundLostItems from "../navigations/FoundLostItems";
@@ -23,6 +23,7 @@ export const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { index: true, Component: Home },
+      // { index: true, element: <div>This is a test Home Page!</div> },
       {
         path: "/found-lost-items",
         Component: FoundLostItems,
