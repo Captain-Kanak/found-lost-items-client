@@ -15,6 +15,7 @@ import TermsOfUse from "../pages/TermsOfUse";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
 import CookiePolicy from "../pages/CookiePolicy";
 import Contact from "../pages/Contact";
+import Profile from "../pages/Profile.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -23,7 +24,6 @@ export const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { index: true, Component: Home },
-      // { index: true, element: <div>This is a test Home Page!</div> },
       {
         path: "/found-lost-items",
         Component: FoundLostItems,
@@ -59,6 +59,14 @@ export const router = createBrowserRouter([
       {
         path: "cookies",
         Component: CookiePolicy,
+      },
+      {
+        path: "/profile",
+        element: (
+          <PrivateRouter>
+            <Profile />
+          </PrivateRouter>
+        ),
       },
       {
         path: "/addItems",

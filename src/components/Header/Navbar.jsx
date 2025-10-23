@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, NavLink } from "react-router";
 import { AuthContext } from "../../contexts/AuthContext";
-import { FaSignOutAlt } from "react-icons/fa";
-import { FiPlusCircle, FiArchive, FiUser, FiMenu, FiX } from "react-icons/fi";
+import { FaSignOutAlt, FaUser } from "react-icons/fa";
+import { FiPlusCircle, FiArchive, FiMenu, FiX } from "react-icons/fi";
+import { MdManageAccounts } from "react-icons/md";
 
 const Navbar = () => {
   const { user, signOutUser } = useContext(AuthContext);
@@ -96,6 +97,7 @@ const Navbar = () => {
                     e.target.src = "https://i.ibb.co/XkzcZ8mD/user.png";
                   }}
                 />
+
                 {/* Dropdown below avatar */}
                 <div
                   ref={dropdownRef}
@@ -106,6 +108,12 @@ const Navbar = () => {
                         : "opacity-0 scale-95 pointer-events-none"
                     }`}
                 >
+                  <Link
+                    to="/profile"
+                    className="flex items-center gap-3 text-gray-700 hover:text-green-600 font-medium"
+                  >
+                    <FaUser size={20} /> Profile
+                  </Link>
                   <Link
                     to="/addItems"
                     onClick={() => setOpen(false)}
@@ -125,7 +133,7 @@ const Navbar = () => {
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-3 text-gray-700 hover:text-green-600 font-medium"
                   >
-                    <FiUser size={20} /> Manage My Items
+                    <MdManageAccounts size={20} /> Manage My Items
                   </Link>
 
                   {/* Sign Out Button */}
