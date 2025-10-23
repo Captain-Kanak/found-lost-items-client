@@ -4,12 +4,14 @@ import { AuthContext } from "../contexts/AuthContext";
 import Swal from "sweetalert2";
 import SocialSignIn from "../components/SocialSignIn/SocialSignIn";
 import { Helmet } from "react-helmet";
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
 const SignIn = () => {
   const { signInUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
+  const axiosPublic = useAxiosPublic();
 
   const handleSignIn = (e) => {
     e.preventDefault();
@@ -19,13 +21,18 @@ const SignIn = () => {
     const password = form.password.value;
 
     signInUser(email, password)
-      .then(() => {
+      .then(async () => {
         navigate(from, { replace: true });
         Swal.fire({
           title: "Welcome Back!",
           icon: "success",
           timer: 1200,
           showConfirmButton: false,
+        });
+
+        // update user lastSignIn Time
+        await axiosPublic.patch(`/users?email=${email}`, {
+          lastSignIn: new Date().toISOString(),
         });
       })
       .catch((error) => {

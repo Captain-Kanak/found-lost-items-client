@@ -4,11 +4,13 @@ import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router";
 import SocialSignIn from "../components/SocialSignIn/SocialSignIn";
 import { Helmet } from "react-helmet";
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
 const Register = () => {
   const { createUser, updateUserProfile } = useContext(AuthContext);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const axiosPublic = useAxiosPublic();
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -40,11 +42,15 @@ const Register = () => {
       .then(() => {
         const userInfo = { displayName: name, photoURL: photo };
         updateUserProfile(userInfo)
-          .then(() => {
+          .then(async () => {
+            // save user to database
+            const userData = { username: name, email };
+            await axiosPublic.post("/users", userData);
+
             form.reset();
             navigate("/");
             Swal.fire({
-              title: "🎉 Account Created Successfully!",
+              title: "Account Created Successfully!",
               icon: "success",
               timer: 1200,
               showConfirmButton: false,
