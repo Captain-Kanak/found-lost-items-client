@@ -33,7 +33,7 @@ const Modal = ({ isOpen, onClose, children, title }) => {
 };
 
 const AddLostFoundItem = () => {
-  const { user } = useAuth();
+  const { user, dbUser } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [lostOrFoundDate, setLostOrFoundDate] = useState(new Date());
   const navigate = useNavigate();
@@ -102,7 +102,7 @@ const AddLostFoundItem = () => {
         email: contactEmail,
         phone: contactPhone,
       },
-      userId: "6898a5e3c52367e1f99a033c",
+      userId: dbUser._id,
       lostOrFounddate: lostOrFoundDate.toISOString(),
     };
 

@@ -24,15 +24,10 @@ const MyItems = () => {
   const [currentItem, setCurrentItem] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  console.log(dbUser);
-
-  // --- NEW STATES FOR IMAGE UPLOAD IN UPDATE MODAL ---
   const [selectedFileForUpdate, setSelectedFileForUpdate] = useState(null);
-  const [uploadingImage, setUploadingImage] = useState(false); // For both image upload and item update
+  const [uploadingImage, setUploadingImage] = useState(false);
 
-  // Replace demoUser with actual user if available, or handle auth properly
-  // For now, keeping it as is, but it should be user?._id or user?.email
-  const userIdForQuery = "6898a5e3c52367e1f99a033c";
+  const userIdForQuery = dbUser?._id;
   const userEmailForContact = user?.email;
 
   const {
@@ -41,7 +36,7 @@ const MyItems = () => {
     refetch,
   } = useQuery({
     queryKey: ["myItems", userIdForQuery],
-    enabled: !!userIdForQuery, // Only enable query if userId is available
+    enabled: !!userIdForQuery,
     queryFn: async () => {
       const res = await axiosSecure.get(`/myItems?userId=${userIdForQuery}`);
       return res.data;
@@ -192,6 +187,12 @@ const MyItems = () => {
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
+                  No.
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Thumbnail
                 </th>
                 <th
@@ -239,8 +240,11 @@ const MyItems = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {myItems.map((item) => (
+              {myItems.map((item, index) => (
                 <tr key={item._id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {index + 1}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <img
                       src={item.thumbnail}

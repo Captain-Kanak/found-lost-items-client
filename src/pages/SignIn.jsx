@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
-import { AuthContext } from "../contexts/AuthContext";
 import Swal from "sweetalert2";
 import SocialSignIn from "../components/SocialSignIn/SocialSignIn";
 import { Helmet } from "react-helmet";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 import useAuth from "../hooks/useAuth";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 
 const SignIn = () => {
   const { signInUser } = useAuth();
@@ -13,6 +13,7 @@ const SignIn = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
   const axiosPublic = useAxiosPublic();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignIn = (e) => {
     e.preventDefault();
@@ -74,17 +75,30 @@ const SignIn = () => {
           </div>
 
           {/* Password */}
-          <div>
+          <div className="relative">
             <label className="block text-gray-700 font-medium mb-1">
               Password
             </label>
-            <input
-              type="password"
-              name="password"
-              required
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-              placeholder="Enter your password"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                required
+                className="w-full px-4 py-2 pr-10 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 cursor-pointer"
+              >
+                {showPassword ? (
+                  <FaRegEyeSlash size={18} />
+                ) : (
+                  <FaRegEye size={18} />
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Login Button */}
