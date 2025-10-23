@@ -2,36 +2,63 @@ import React, { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 
-const SocialSignIn = ({ from }) => {
+const SocialSignIn = ({ from = "/" }) => {
   const { googleSignIn } = useContext(AuthContext);
   const navigate = useNavigate();
+  const axiosPublic = useAxiosPublic();
 
-  const handleGoogleSignIn = () => {
-    googleSignIn()
-      .then((result) => {
-        console.log(result.user);
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await googleSignIn();
+      const user = result.user;
 
-        navigate(from, { replace: true });
-        Swal.fire({
-          title: "Welcome",
-          icon: "success",
-          timer: 1000,
-          didOpen: () => {
-            Swal.showLoading();
-          },
-        });
-      })
-      .catch((error) => {
-        console.log(error);
+      // Extract user info
+      const userData = {
+        username: user.displayName || "Unknown User",
+        email: user.email,
+        photo: user.photoURL || "",
+        lastSignIn: new Date().toISOString(),
+      };
+
+      // save user to database
+      try {
+        await axiosPublic.post("/users", userData);
+      } catch (error) {
+        // If user already exists, update lastSignIn time
+        if (error.response && error.response.status === 409) {
+          await axiosPublic.patch(`/users?email=${user.email}`, {
+            lastSignIn: new Date().toISOString(),
+          });
+        } else {
+          console.error("Error saving user:", error);
+        }
+      }
+
+      // Navigate and show success
+      navigate(from, { replace: true });
+      Swal.fire({
+        title: `Welcome${user.displayName ? `, ${user.displayName}` : ""}!`,
+        icon: "success",
+        timer: 1000,
+        showConfirmButton: false,
       });
+    } catch (error) {
+      console.error("Google Sign-In Error:", error);
+      Swal.fire({
+        title: "Login Failed",
+        text: error.message,
+        icon: "error",
+      });
+    }
   };
 
   return (
     <div className="w-xs mx-auto">
       <button
         onClick={handleGoogleSignIn}
-        className="btn bg-white text-black text-base border-[#e5e5e5] w-full"
+        className="btn bg-white text-black text-base border-[#e5e5e5] w-full flex items-center justify-center gap-2"
       >
         <svg
           aria-label="Google logo"

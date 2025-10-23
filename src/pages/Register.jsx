@@ -5,20 +5,43 @@ import { Link, useNavigate } from "react-router";
 import SocialSignIn from "../components/SocialSignIn/SocialSignIn";
 import { Helmet } from "react-helmet";
 import useAxiosPublic from "../hooks/useAxiosPublic";
+import handleUploadImage from "../tools/handleUploadImage";
 
 const Register = () => {
   const { createUser, updateUserProfile } = useContext(AuthContext);
   const [errorMessage, setErrorMessage] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [preview, setPreview] = useState(null);
+  const [photoUrl, setPhotoUrl] = useState("");
   const navigate = useNavigate();
   const axiosPublic = useAxiosPublic();
 
+  // Handle image upload
+  const handleImageChange = async (e) => {
+    setUploading(true);
+    try {
+      const imageUrl = await handleUploadImage(e);
+      if (imageUrl) {
+        setPhotoUrl(imageUrl);
+        setPreview(imageUrl);
+      } else {
+        Swal.fire("Upload Failed", "Please try again.", "error");
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error", "Image upload failed", "error");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Handle register
   const handleRegister = (e) => {
     e.preventDefault();
 
     const form = e.target;
     const name = form.name.value;
     const email = form.email.value;
-    const photo = form.photo.value;
     const password = form.password.value;
 
     // Password validation
@@ -37,17 +60,28 @@ const Register = () => {
     if (!isLongEnough)
       return setErrorMessage("Password must be at least 6 characters long.");
 
+    // Ensure image uploaded
+    if (!photoUrl) {
+      return Swal.fire(
+        "Missing Photo",
+        "Please upload your profile image.",
+        "warning"
+      );
+    }
+
     // Create user
     createUser(email, password)
       .then(() => {
-        const userInfo = { displayName: name, photoURL: photo };
+        const userInfo = { displayName: name, photoURL: photoUrl };
         updateUserProfile(userInfo)
           .then(async () => {
-            // save user to database
-            const userData = { username: name, email };
+            // Save user to database
+            const userData = { username: name, email, photo: photoUrl };
             await axiosPublic.post("/users", userData);
 
             form.reset();
+            setPreview(null);
+            setPhotoUrl("");
             navigate("/");
             Swal.fire({
               title: "Account Created Successfully!",
@@ -113,17 +147,28 @@ const Register = () => {
             />
           </div>
 
-          {/* Photo URL */}
+          {/* Image Upload */}
           <div>
             <label className="block text-gray-700 font-medium mb-1">
-              Photo URL
+              Profile Image
             </label>
             <input
-              type="url"
-              name="photo"
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-pink-400 focus:outline-none"
-              placeholder="Enter photo URL"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="w-full px-2 py-1 rounded-lg border border-gray-300 focus:ring-2 focus:ring-pink-400 focus:outline-none 
+              cursor-pointer"
             />
+            {uploading && (
+              <p className="text-sm text-blue-500 mt-1">Uploading image...</p>
+            )}
+            {preview && (
+              <img
+                src={preview}
+                alt="Preview"
+                className="mt-3 w-20 h-20 rounded-full object-cover border-2 border-pink-400"
+              />
+            )}
           </div>
 
           {/* Password */}
@@ -150,9 +195,15 @@ const Register = () => {
           {/* Register Button */}
           <button
             type="submit"
-            className="w-full py-3 rounded-lg text-white text-lg font-semibold bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 transition-all duration-300 shadow-md cursor-pointer"
+            disabled={uploading}
+            className={`w-full py-3 rounded-lg text-white text-lg font-semibold transition-all duration-300 shadow-md 
+              cursor-pointer ${
+                uploading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700"
+              }`}
           >
-            Register
+            {uploading ? "Uploading..." : "Register"}
           </button>
         </form>
 

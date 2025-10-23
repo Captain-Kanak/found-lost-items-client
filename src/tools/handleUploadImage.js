@@ -1,18 +1,37 @@
 import axios from "axios";
 
 export default async function handleUploadImage(event) {
-  const image = event.target.files[0];
+  try {
+    const image = event.target.files?.[0];
+    if (!image) {
+      throw new Error("No image file selected");
+    }
 
-  const formData = new FormData();
-  formData.append("image", image);
+    // Validate file type
+    const validTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+    if (!validTypes.includes(image.type)) {
+      throw new Error(
+        "Invalid image type. Only JPG, PNG, and WEBP are allowed."
+      );
+    }
 
-  const imageUploadUrl = `https://api.imgbb.com/1/upload?key=${
-    import.meta.env.VITE_IMGBB_API_KEY
-  }`;
+    const formData = new FormData();
+    formData.append("image", image);
 
-  const res = await axios.post(imageUploadUrl, formData);
+    const imageUploadUrl = `https://api.imgbb.com/1/upload?key=${
+      import.meta.env.VITE_IMGBB_API_KEY
+    }`;
 
-  const imageUrl = res.data.data.url;
+    const res = await axios.post(imageUploadUrl, formData);
 
-  return imageUrl;
+    if (res.data && res.data.success) {
+      const imageUrl = res.data.data.url;
+      return imageUrl;
+    } else {
+      throw new Error("Image upload failed");
+    }
+  } catch (error) {
+    console.error("Error uploading image:", error.message || error);
+    return null;
+  }
 }
