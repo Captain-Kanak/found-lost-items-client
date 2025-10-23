@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react"; // Added useMemo
+import React, { useState, useMemo } from "react";
 import ItemsCard from "../components/ItemsCard";
 import { Helmet } from "react-helmet";
 import Spinner from "../components/Spinner";
@@ -31,6 +31,7 @@ const FoundLostItems = () => {
     return Array.from(categories).sort();
   }, [items]);
 
+  // Filter and sort items
   const filteredItems = items
     .filter(
       (item) =>
@@ -63,7 +64,7 @@ const FoundLostItems = () => {
           className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
 
-        {/* Sort by Post Type (No change needed here) */}
+        {/* Sort by Post Type */}
         <select
           value={sortPostType}
           onChange={(e) => setSortPostType(e.target.value)}
@@ -74,7 +75,7 @@ const FoundLostItems = () => {
           <option value="Found">Found</option>
         </select>
 
-        {/* Sort by Category - DYNAMIC OPTIONS */}
+        {/* Sort by Category */}
         <select
           value={sortCategory}
           onChange={(e) => setSortCategory(e.target.value)}
