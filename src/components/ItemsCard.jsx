@@ -1,28 +1,18 @@
 import { format } from "date-fns";
 import { SlLocationPin } from "react-icons/sl";
-import { Link } from "react-router-dom"; // Use react-router-dom for Link
+import { Link } from "react-router";
 
 const ItemsCard = ({ item }) => {
-  // --- CHANGE MADE HERE ---
-  // Corrected property names to match your sample data
-  const {
-    _id,
-    thumbnail,
-    postType, // Changed from post_type
-    title,
-    location,
-    lostOrFounddate, // Changed from date
-  } = item;
+  const { _id, thumbnail, postType, title, location, lostOrFounddate } = item;
 
-  // Use the corrected date property
-  // Add a check in case lostOrFounddate is missing or invalid
   const formattedDate = lostOrFounddate
     ? format(new Date(lostOrFounddate), "PPpp")
-    : "N/A"; // Handle cases where date might be missing
+    : "N/A";
 
   return (
     <div data-aos="zoom-in" className="group">
       <div className="card bg-base-100 h-[420px] mx-auto shadow-md hover:shadow-xl transition-all duration-300 rounded-xl overflow-hidden border border-gray-200">
+
         {/* Image Section with Overlay */}
         <figure className="relative h-[250px] overflow-hidden">
           <img
@@ -31,6 +21,7 @@ const ItemsCard = ({ item }) => {
             alt={title}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-80"></div>
+          
           {/* Use the corrected postType property */}
           <span className="absolute top-3 left-3 badge badge-info text-white shadow-md">
             {postType}

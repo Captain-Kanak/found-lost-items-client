@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react"; // Added useMemo
 import ItemsCard from "../components/ItemsCard";
 import { Helmet } from "react-helmet";
 import Spinner from "../components/Spinner";
@@ -11,6 +11,7 @@ const FoundLostItems = () => {
   const [sortPostType, setSortPostType] = useState("");
   const [sortCategory, setSortCategory] = useState("");
 
+  // Fetch all items
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["items"],
     queryFn: async () => {
@@ -19,13 +20,24 @@ const FoundLostItems = () => {
     },
   });
 
+  // Memoize the list of unique categories to prevent re-calculation on every render
+  const uniqueCategories = useMemo(() => {
+    const categories = new Set();
+    items.forEach((item) => {
+      if (item.category) {
+        categories.add(item.category);
+      }
+    });
+    return Array.from(categories).sort();
+  }, [items]);
+
   const filteredItems = items
     .filter(
       (item) =>
         item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.location.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    .filter((item) => (sortPostType ? item.post_type === sortPostType : true))
+    .filter((item) => (sortPostType ? item.postType === sortPostType : true))
     .filter((item) => (sortCategory ? item.category === sortCategory : true));
 
   if (isLoading) return <Spinner />;
@@ -35,6 +47,7 @@ const FoundLostItems = () => {
       <Helmet>
         <title>All Items - App</title>
       </Helmet>
+
       <h1 className="text-center text-3xl font-bold mb-6">
         Find Your Lost Items Through Our Network
       </h1>
@@ -50,7 +63,7 @@ const FoundLostItems = () => {
           className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
 
-        {/* Sort by Post Type */}
+        {/* Sort by Post Type (No change needed here) */}
         <select
           value={sortPostType}
           onChange={(e) => setSortPostType(e.target.value)}
@@ -61,18 +74,19 @@ const FoundLostItems = () => {
           <option value="Found">Found</option>
         </select>
 
-        {/* Sort by Category */}
+        {/* Sort by Category - DYNAMIC OPTIONS */}
         <select
           value={sortCategory}
           onChange={(e) => setSortCategory(e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
           <option value="">All Categories</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Clothing">Clothing</option>
-          <option value="Documents">Documents</option>
-          <option value="Accessories">Accessories</option>
-          {/* You can add more categories as needed */}
+          {/* Dynamically generated options */}
+          {uniqueCategories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -86,7 +100,7 @@ const FoundLostItems = () => {
           </div>
         ) : (
           <p className="text-center col-span-full text-gray-500">
-            No items match your search.
+            No items available.
           </p>
         )}
       </div>
