@@ -38,7 +38,7 @@ const MyItems = () => {
     queryKey: ["myItems", userIdForQuery],
     enabled: !!userIdForQuery,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/myItems?userId=${userIdForQuery}`);
+      const res = await axiosSecure.get(`/myItems/${userIdForQuery}`);
       return res.data;
     },
   });
@@ -48,14 +48,14 @@ const MyItems = () => {
     setSelectedDate(
       item.lostOrFounddate ? new Date(item.lostOrFounddate) : new Date()
     );
-    setSelectedFileForUpdate(null); // Clear any previously selected file
+    setSelectedFileForUpdate(null);
     setModalIsOpen(true);
   };
 
   const closeModal = () => {
     setModalIsOpen(false);
     setCurrentItem(null);
-    setSelectedFileForUpdate(null); // Clear selected file when closing
+    setSelectedFileForUpdate(null);
   };
 
   const handleDelete = async (id) => {

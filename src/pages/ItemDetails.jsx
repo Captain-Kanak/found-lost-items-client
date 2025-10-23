@@ -17,7 +17,7 @@ Modal.setAppElement("#root");
 
 const ItemDetails = () => {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user, dbUser } = useAuth();
   const axiosPublic = useAxiosPublic();
   const axiosSecure = useAxiosSecure();
   const location = useLocation();
@@ -29,7 +29,7 @@ const ItemDetails = () => {
 
   const {
     data: item = {},
-    isLoading,
+    isLoading: isItemLoading,
     refetch,
   } = useQuery({
     queryKey: ["item", id],
@@ -40,22 +40,39 @@ const ItemDetails = () => {
     },
   });
 
-  if (isLoading) return <Spinner />;
-
   const {
     _id,
-    post_type,
+    userId,
+    postType,
     title,
     thumbnail,
     category,
     status,
     location: itemLocation,
-    date,
+    lostOrFounddate,
     description,
-    contact_info,
+    contactInfo,
   } = item;
 
-  const formattedDate = date ? format(new Date(date), "PPpp") : "";
+  const formattedDate = lostOrFounddate
+    ? format(new Date(lostOrFounddate), "PPpp")
+    : "";
+
+  // Fetch author details
+  const { data: authorData, isLoading: isAuthorLoading } = useQuery({
+    queryKey: ["author", userId],
+    enabled: !!userId,
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/users/${userId}`);
+      return res.data;
+    },
+  });
+
+  const authorName = authorData?.username || "N/A";
+  const authorEmail = authorData?.email || "N/A";
+  const authorPhoto = authorData?.photo || "https://i.ibb.co/XkzcZ8mD/user.png";
+
+  if (isItemLoading || isAuthorLoading) return <Spinner />;
 
   const handleSubmit = async () => {
     if (!recoveredLocation) {
@@ -65,31 +82,21 @@ const ItemDetails = () => {
 
     const recoveredData = {
       itemId: _id,
-      title,
-      thumbnail,
-      category,
-      post_type,
-      description,
-      location: itemLocation,
-      publishedDate: date,
-      publishedBy: contact_info,
+      userId: dbUser?._id,
       recoveryInfo: {
-        name: user.displayName,
-        email: user.email,
-        image: user.photoURL,
-        recoveredLocation,
-        recoveredDate: recoveredDate.toISOString(),
+        name: user?.displayName,
+        email: user?.email,
+        photo: user?.photoURL,
+        location: recoveredLocation,
       },
     };
 
     try {
       setIsSubmitting(true);
 
-      // Use axiosSecure.post for the recovered items
-      await axiosSecure.post("/recovered-items", recoveredData);
+      const res = await axiosSecure.post("/recoverItems", recoveredData);
 
-      // Use axiosSecure.patch for updating the item status
-      await axiosSecure.patch(`/items/${_id}`, { status: "recovered" });
+      console.log(res);
 
       toast.success("Recovered successfully!");
       refetch();
@@ -133,7 +140,7 @@ const ItemDetails = () => {
 
             <div className="flex flex-wrap gap-3 text-sm sm:text-base text-gray-600 font-medium mb-5">
               <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full shadow-sm">
-                Post Type: {post_type}
+                Post Type: {postType}
               </span>
               <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full shadow-sm">
                 Category: {category}
@@ -145,12 +152,31 @@ const ItemDetails = () => {
               <span>{itemLocation}</span>
             </p>
             <p className="mb-2 text-gray-700 font-medium">
-              Date: <time dateTime={date}>{formattedDate}</time>
+              Date: <time dateTime={lostOrFounddate}>{formattedDate}</time>
             </p>
             <p className="flex items-center gap-2 mb-6 text-gray-700">
               <GoMail className="text-indigo-500" size={18} />
-              <span>{contact_info}</span>
+              <span>{contactInfo?.email || contactInfo}</span>{" "}
+              {/* Handle contactInfo as object or string */}
             </p>
+
+            {/* Author Info */}
+            <div className="mb-6 p-4 border border-gray-200 rounded-md bg-gray-50">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                Posted By
+              </h3>
+              <div className="flex items-center gap-3">
+                <img
+                  src={authorPhoto}
+                  alt={authorName}
+                  className="w-12 h-12 rounded-full object-cover border border-gray-300"
+                />
+                <div>
+                  <p className="text-gray-700 font-medium">{authorName}</p>
+                  <p className="text-gray-500 text-sm">{authorEmail}</p>
+                </div>
+              </div>
+            </div>
 
             <p className="text-gray-600 whitespace-pre-line leading-relaxed">
               {description}
@@ -167,7 +193,7 @@ const ItemDetails = () => {
                   </p>
                 ) : (
                   <>
-                    {post_type === "Lost" && (
+                    {postType === "Lost" && (
                       <button
                         onClick={() => setShowModal(true)}
                         className="btn-primary px-6 py-3 rounded-full bg-indigo-600 text-white font-semibold hover:bg-indigo-700 shadow-md transition cursor-pointer"
@@ -175,7 +201,7 @@ const ItemDetails = () => {
                         Found This!
                       </button>
                     )}
-                    {post_type === "Found" && (
+                    {postType === "Found" && (
                       <button
                         onClick={() => setShowModal(true)}
                         className="btn-primary px-6 py-3 rounded-full bg-indigo-600 text-white font-semibold hover:bg-indigo-700 shadow-md transition cursor-pointer"
