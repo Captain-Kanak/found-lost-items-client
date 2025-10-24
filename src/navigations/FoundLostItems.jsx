@@ -20,19 +20,23 @@ const FoundLostItems = () => {
     },
   });
 
+  const notRecoveredItems = items.filter(
+    (item) => item.status === "not-recovered"
+  );
+
   // Memoize the list of unique categories to prevent re-calculation on every render
   const uniqueCategories = useMemo(() => {
     const categories = new Set();
-    items.forEach((item) => {
+    notRecoveredItems.forEach((item) => {
       if (item.category) {
         categories.add(item.category);
       }
     });
     return Array.from(categories).sort();
-  }, [items]);
+  }, [notRecoveredItems]);
 
   // Filter and sort items
-  const filteredItems = items
+  const filteredItems = notRecoveredItems
     .filter(
       (item) =>
         item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
