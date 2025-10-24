@@ -1,8 +1,8 @@
-import Slider from "../components/home/Slider";
-import LatestItems from "../components/home/LatestItems";
-import OurMission from "../components/home/OurMission";
-import AboutOurStats from "../components/home/AboutOurStats";
-import Newsletter from "../components/home/Newsletter";
+import Slider from "../components/homeSections/Slider";
+import LatestItems from "../components/homeSections/LatestItems";
+import OurMission from "../components/homeSections/OurMission";
+import AboutOurStats from "../components/homeSections/AboutOurStats";
+import Newsletter from "../components/homeSections/Newsletter";
 
 const Home = () => {
   return (
