@@ -33,9 +33,7 @@ const SignIn = () => {
         });
 
         // update user lastSignIn Time
-        await axiosPublic.patch(`/users?email=${email}`, {
-          lastSignIn: new Date().toISOString(),
-        });
+        await axiosPublic.post(`/users`, { email });
       })
       .catch((error) => {
         Swal.fire({

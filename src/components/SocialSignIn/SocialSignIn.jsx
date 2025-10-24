@@ -26,14 +26,7 @@ const SocialSignIn = ({ from = "/" }) => {
       try {
         await axiosPublic.post("/users", userData);
       } catch (error) {
-        // If user already exists, update lastSignIn time
-        if (error.response && error.response.status === 409) {
-          await axiosPublic.patch(`/users?email=${user.email}`, {
-            lastSignIn: new Date().toISOString(),
-          });
-        } else {
-          console.error("Error saving user:", error);
-        }
+        console.error("Error saving user:", error);
       }
 
       // Navigate and show success
