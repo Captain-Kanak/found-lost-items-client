@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import useAuth from "../hooks/useAuth";
-import useAxiosPublic from "../hooks/useAxiosPublic";
 import { toast } from "react-hot-toast";
 import Spinner from "../components/Spinner";
 import handleUploadImage from "../tools/handleUploadImage";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 export default function Profile() {
   const { dbUser, dbLoading, updateUserProfile } = useAuth();
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
 
   const [name, setName] = useState("");
   const [photo, setPhoto] = useState("");
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false); // for image upload
+  const [uploading, setUploading] = useState(false);
 
   // Sync form state with dbUser when it loads
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function Profile() {
     try {
       const uploadedUrl = await handleUploadImage(e);
       if (uploadedUrl) {
-        setPhoto(uploadedUrl); // update local state instantly
+        setPhoto(uploadedUrl);
         toast.success("Image uploaded successfully!");
       } else {
         toast.error("Image upload failed.");
@@ -47,7 +47,7 @@ export default function Profile() {
 
     try {
       await updateUserProfile({ displayName: name, photoURL: photo });
-      await axiosPublic.patch(`/users?email=${dbUser.email}`, {
+      await axiosSecure.patch(`/users?email=${dbUser.email}`, {
         username: name,
         photo,
       });

@@ -62,9 +62,9 @@ const Navbar = () => {
         {/* Logo */}
         <Link
           to="/"
-          className="text-lg lg:text-2xl font-extrabold text-gray-900 select-none hover:text-green-600 transition-colors duration-300"
+          className="text-lg lg:text-2xl font-extrabold text-green-600 select-none transition-colors duration-300"
         >
-          Items<span className="text-green-600">Tracker</span>
+          Items<span className=" text-primary">Tracker</span>
         </Link>
 
         {/* Desktop Menu */}
@@ -140,7 +140,7 @@ const Navbar = () => {
                   {/* Sign Out Button */}
                   <button
                     onClick={handleSignOut}
-                    className="flex items-center justify-center gap-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition cursor-pointer"
+                    className="flex items-center justify-center gap-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-primary transition cursor-pointer"
                     title="Sign Out"
                   >
                     <FaSignOutAlt /> Sign Out

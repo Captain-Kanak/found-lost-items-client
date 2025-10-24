@@ -6,9 +6,9 @@ const Footer = () => {
     <footer className="bg-white py-10 px-6 lg:px-0 border-t border-gray-200">
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
         <aside>
-          <h1 className="text-2xl font-bold mb-3">
+          <h1 className="text-2xl font-bold mb-3 text-green-600">
             Items
-            <span className="text-green-500">Tracker</span>
+            <span className="text-primary">Tracker</span>
           </h1>
           <p className="text-gray-600 leading-relaxed">
             Helping you reconnect with what matters — report lost items, find

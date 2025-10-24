@@ -12,7 +12,6 @@ const ItemsCard = ({ item }) => {
   return (
     <div data-aos="zoom-in" className="group">
       <div className="card bg-base-100 h-[420px] mx-auto shadow-md hover:shadow-xl transition-all duration-300 rounded-xl overflow-hidden border border-gray-200">
-
         {/* Image Section with Overlay */}
         <figure className="relative h-[250px] overflow-hidden">
           <img
@@ -21,9 +20,11 @@ const ItemsCard = ({ item }) => {
             alt={title}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-80"></div>
-          
+
           {/* Use the corrected postType property */}
-          <span className="absolute top-3 left-3 badge badge-info text-white shadow-md">
+          <span
+            className={`absolute top-3 left-3 badge ${postType === "Lost" ? "badge-error" : "badge-success"} text-white shadow-md`}
+          >
             {postType}
           </span>
         </figure>
@@ -47,7 +48,7 @@ const ItemsCard = ({ item }) => {
           {/* Button */}
           <div className="card-actions justify-end mt-4">
             <Link to={`/items/${_id}`}>
-              <button className="btn bg-green-500 text-white font-medium rounded-lg px-4 py-2 shadow hover:shadow-lg hover:scale-105 transition-all duration-300">
+              <button className="btn btn-primary text-white font-medium rounded-lg px-4 py-2 shadow hover:shadow-lg hover:scale-105 transition-all duration-300">
                 View Details
               </button>
             </Link>
