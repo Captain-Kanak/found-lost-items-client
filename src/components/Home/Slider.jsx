@@ -7,8 +7,6 @@ import "swiper/css/pagination";
 import welcome from "../../assets/welcome.jpg";
 import foundLostItems from "../../assets/lost-found-items.jpg";
 import itemsBox from "../../assets/lost-found-box.jpg";
-import { Link } from "react-router";
-import { FaLocationArrow } from "react-icons/fa";
 
 const slides = [
   {
