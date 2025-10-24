@@ -1,5 +1,4 @@
 import React from "react";
-import { AuthContext } from "../../contexts/AuthContext";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 import useAxiosPublic from "../../hooks/useAxiosPublic";

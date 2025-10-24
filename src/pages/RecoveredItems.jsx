@@ -9,18 +9,23 @@ import { useQuery } from "@tanstack/react-query";
 import Spinner from "../components/Spinner";
 
 const RecoveredItems = () => {
-  const { user } = useAuth();
+  const { user, dbUser } = useAuth();
   const axiosSecure = useAxiosSecure();
   const [isTableView, setIsTableView] = useState(false);
+  const userIdForQuery = dbUser?._id;
 
   const { data: recoveredItems = [], isLoading } = useQuery({
-    queryKey: ["recoveredItems", user?.email],
-    enabled: !!user?.email,
+    queryKey: ["recoveredItems", user],
+    enabled: !!user,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/recovered-items?email=${user.email}`);
+      const res = await axiosSecure.get(`/recoverItems`);
       return res.data;
     },
   });
+
+  const filtredRecoveredItems = recoveredItems.filter(
+    (item) => item.userId === userIdForQuery
+  );
 
   if (isLoading) return <Spinner />;
 
@@ -55,7 +60,7 @@ const RecoveredItems = () => {
         </button>
       </div>
 
-      {recoveredItems.length === 0 ? (
+      {filtredRecoveredItems.length === 0 ? (
         <p className="text-center text-gray-500">
           Haven't recovered any items yet.
         </p>
